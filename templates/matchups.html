@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}Matchups & Box Scores - ESPN Fantasy Dashboard{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .roster-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    
+    .team-roster {
+        background: white;
+        padding: 1rem;
+        border-radius: 4px;
+    }
+    
+    .roster-table {
+        font-size: 0.85rem;
+    }
+    
+    .roster-table td {
+        padding: 0.4rem 0.5rem;
+    }
+    
+    .starter-row {
+        background: #e7f5e7;
+    }
+    
+    .bench-row {
+        opacity: 0.7;
+    }
+    
+    .matchup-card {
+        margin-bottom: 2rem;
+        border: 2px solid #eee;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .matchup-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .score-display {
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    
+    .team-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    
+    .projected {
+        font-size: 0.9rem;
+        opacity: 0.8;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Weekly Matchups & Box Scores</h2>
+    
+    <div class="filter-bar">
+        <label for="week-select">Select Week:</label>
+        <select id="week-select" onchange="window.location.href='/matchups?season={{ selected_season }}&week=' + this.value">
+            {% for week in available_weeks %}
+            <option value="{{ week }}" {% if week == selected_week %}selected{% endif %}>
+                Week {{ week }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    {% if matchups %}
+        {% for matchup in matchups %}
+        <div class="matchup-card">
+            <div class="matchup-header">
+                <div>
+                    <div class="team-name">{{ matchup.home_team or 'Home Team' }}</div>
+                    <div class="score-display">{{ "%.2f"|format(matchup.home_score or 0) }}</div>
+                    {% if matchup.home_projected %}
+                    <div class="projected">Proj: {{ "%.1f"|format(matchup.home_projected) }}</div>
+                    {% endif %}
+                </div>
+                
+                <div style="font-size: 1.5rem;">vs</div>
+                
+                <div style="text-align: right;">
+                    <div class="team-name">{{ matchup.away_team or 'Away Team' }}</div>
+                    <div class="score-display">{{ "%.2f"|format(matchup.away_score or 0) }}</div>
+                    {% if matchup.away_projected %}
+                    <div class="projected">Proj: {{ "%.1f"|format(matchup.away_projected) }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if matchup.bracket_type %}
+            <div style="background: #fff3cd; padding: 0.5rem; text-align: center; font-weight: 600;">
+                {{ matchup.bracket_type }}
+            </div>
+            {% endif %}
+            
+            {% if matchup.home_roster or matchup.away_roster %}
+            <div class="roster-container">
+                <div class="team-roster">
+                    <h3>{{ matchup.home_team }} Roster</h3>
+                    <table class="roster-table">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Pos</th>
+                                <th>Team</th>
+                                <th>Pts</th>
+                                <th>Proj</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player in matchup.home_roster %}
+                            <tr class="{% if player.started %}starter-row{% else %}bench-row{% endif %}">
+                                <td>{{ player.player_name or 'Unknown' }}</td>
+                                <td><strong>{{ player.position or 'N/A' }}</strong></td>
+                                <td>{{ player.nfl_team or '' }}</td>
+                                <td><strong>{{ "%.1f"|format(player.points or 0) }}</strong></td>
+                                <td style="color: #888;">{{ "%.1f"|format(player.projected or 0) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="team-roster">
+                    <h3>{{ matchup.away_team }} Roster</h3>
+                    <table class="roster-table">
+                        <thead>
+                            <tr>
+                                <th>Player</th>
+                                <th>Pos</th>
+                                <th>Team</th>
+                                <th>Pts</th>
+                                <th>Proj</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for player in matchup.away_roster %}
+                            <tr class="{% if player.started %}starter-row{% else %}bench-row{% endif %}">
+                                <td>{{ player.player_name or 'Unknown' }}</td>
+                                <td><strong>{{ player.position or 'N/A' }}</strong></td>
+                                <td>{{ player.nfl_team or '' }}</td>
+                                <td><strong>{{ "%.1f"|format(player.points or 0) }}</strong></td>
+                                <td style="color: #888;">{{ "%.1f"|format(player.projected or 0) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+    <p>No matchup data available for this week.</p>
+    {% endif %}
+</div>
+{% endblock %}

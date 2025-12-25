@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}Data Validation - ESPN Fantasy Dashboard{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .validation-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    
+    .screenshot-box {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+    
+    .screenshot-box img {
+        width: 100%;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        cursor: pointer;
+        transition: transform 0.3s;
+    }
+    
+    .screenshot-box img:hover {
+        transform: scale(1.02);
+    }
+    
+    .data-preview {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    
+    .data-preview pre {
+        background: white;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        font-size: 0.85rem;
+        line-height: 1.4;
+    }
+    
+    .screenshot-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .screenshot-item {
+        background: white;
+        padding: 0.5rem;
+        border-radius: 4px;
+        text-align: center;
+        border: 2px solid #eee;
+        transition: border-color 0.3s;
+    }
+    
+    .screenshot-item:hover {
+        border-color: #667eea;
+    }
+    
+    .screenshot-item img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 4px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .screenshot-name {
+        font-size: 0.75rem;
+        color: #666;
+        word-break: break-all;
+    }
+    
+    .screenshot-timestamp {
+        font-size: 0.7rem;
+        color: #999;
+    }
+    
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.9);
+        cursor: pointer;
+    }
+    
+    .modal img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 95%;
+        max-height: 95%;
+        border-radius: 8px;
+    }
+    
+    .close-modal {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        color: white;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    
+    @media (max-width: 768px) {
+        .validation-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Data Validation - {{ season_year }}</h2>
+    <p>Compare extracted data with original ESPN screenshots to verify accuracy.</p>
+</div>
+
+<div class="card">
+    <h3>Extracted Data Summary</h3>
+    
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="stat-label">Teams</div>
+            <div class="stat-value">{{ data.standings|length if data.standings else 0 }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Weeks</div>
+            <div class="stat-value">{{ data.matchups|length if data.matchups else 0 }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Transactions</div>
+            <div class="stat-value">{{ data.transactions|length if data.transactions else 0 }}</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-label">Players</div>
+            <div class="stat-value">{{ data.player_stats|length if data.player_stats else 0 }}</div>
+        </div>
+    </div>
+</div>
+
+{% if data %}
+<div class="validation-grid">
+    <div class="card">
+        <h3>Screenshots</h3>
+        {% if screenshots %}
+        <div class="screenshot-list">
+            {% for screenshot in screenshots[:12] %}
+            <div class="screenshot-item">
+                <img src="/screenshots/{{ screenshot.name }}" 
+                     alt="{{ screenshot.name }}"
+                     onclick="openModal('/screenshots/{{ screenshot.name }}')">
+                <div class="screenshot-name">{{ screenshot.name[:20] }}...</div>
+                <div class="screenshot-timestamp">{{ screenshot.timestamp }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if screenshots|length > 12 %}
+        <p style="margin-top: 1rem; text-align: center; color: #666;">
+            Showing 12 of {{ screenshots|length }} screenshots
+        </p>
+        {% endif %}
+        {% else %}
+        <p>No screenshots available.</p>
+        {% endif %}
+    </div>
+    
+    <div class="card">
+        <h3>Extracted Data (JSON)</h3>
+        <div class="data-preview">
+            <pre>{{ data|tojson(indent=2) }}</pre>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="card">
+    <h3>Validation Checklist</h3>
+    <ul style="line-height: 2;">
+        <li>✓ Screenshots captured during scraping</li>
+        <li>✓ Data extracted using Gemini 3 Flash vision</li>
+        <li>✓ AI verification performed during extraction</li>
+        <li>✓ Data saved to both JSON and SQLite</li>
+    </ul>
+    
+    <h4 style="margin-top: 1.5rem;">How to Validate:</h4>
+    <ol style="line-height: 2;">
+        <li>Click on screenshots to view them full-size</li>
+        <li>Compare visible data in screenshots with extracted JSON</li>
+        <li>Check team names, scores, and records match</li>
+        <li>Verify transactions and player stats are accurate</li>
+    </ol>
+</div>
+
+<!-- Modal for full-size screenshots -->
+<div id="imageModal" class="modal" onclick="closeModal()">
+    <span class="close-modal">&times;</span>
+    <img id="modalImage" src="">
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function openModal(imageSrc) {
+        document.getElementById('imageModal').style.display = 'block';
+        document.getElementById('modalImage').src = imageSrc;
+    }
+    
+    function closeModal() {
+        document.getElementById('imageModal').style.display = 'none';
+    }
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeModal();
+        }
+    });
+</script>
+{% endblock %}
+

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}League Standings - ESPN Fantasy Dashboard{% endblock %}
+
+{% block content %}
+
+{% if not available_seasons %}
+<div class="card">
+    <h2>Welcome to ESPN Fantasy Dashboard!</h2>
+    <p>No historical data found yet. Run the scraper to collect data:</p>
+    <pre style="background: #f5f5f5; padding: 1rem; border-radius: 4px;">python historical_scraper.py</pre>
+</div>
+{% else %}
+
+<div class="stats-grid">
+    <div class="stat-box">
+        <div class="stat-label">Total Teams</div>
+        <div class="stat-value">{{ total_teams or 0 }}</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Weeks Scraped</div>
+        <div class="stat-value">{{ total_weeks or 0 }}</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Available Seasons</div>
+        <div class="stat-value">{{ available_seasons|length }}</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Current Season</div>
+        <div class="stat-value">{{ season_year or 'N/A' }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>League Standings</h2>
+    
+    {% if standings %}
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Team</th>
+                <th>Owner</th>
+                <th>Record</th>
+                <th>Win %</th>
+                <th>Points For</th>
+                <th>Points Against</th>
+                <th>Streak</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in standings %}
+            <tr>
+                <td><strong>{{ team.rank or loop.index }}</strong></td>
+                <td><strong>{{ team.team_name or 'Unknown' }}</strong></td>
+                <td>{{ team.owner or 'N/A' }}</td>
+                <td>{{ team.wins or 0 }}-{{ team.losses or 0 }}{% if team.ties %}-{{ team.ties }}{% endif %}</td>
+                <td>
+                    {% set total_games = (team.wins or 0) + (team.losses or 0) %}
+                    {% if total_games > 0 %}
+                        {{ "%.1f"|format(((team.wins or 0) / total_games) * 100) }}%
+                    {% else %}
+                        0.0%
+                    {% endif %}
+                </td>
+                <td>{{ "%.2f"|format(team.points_for or 0) }}</td>
+                <td>{{ "%.2f"|format(team.points_against or 0) }}</td>
+                <td>
+                    {% if team.streak %}
+                        {% if team.streak.startswith('W') %}
+                            <span class="badge badge-success">{{ team.streak }}</span>
+                        {% elif team.streak.startswith('L') %}
+                            <span class="badge badge-warning">{{ team.streak }}</span>
+                        {% else %}
+                            <span class="badge badge-info">{{ team.streak }}</span>
+                        {% endif %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No standings data available. Please run the scraper first.</p>
+    {% endif %}
+</div>
+
+{% endif %}
+{% endblock %}
+

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Transactions - ESPN Fantasy Dashboard{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Recent Transactions</h2>
+    
+    {% if transactions %}
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Team</th>
+                <th>Type</th>
+                <th>Players Added</th>
+                <th>Players Dropped</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for txn in transactions %}
+            <tr>
+                <td>{{ txn.date or 'N/A' }}</td>
+                <td><strong>{{ txn.team or 'N/A' }}</strong></td>
+                <td>
+                    {% if txn.type == 'trade' %}
+                        <span class="badge badge-info">Trade</span>
+                    {% elif txn.type == 'add' %}
+                        <span class="badge badge-success">Add</span>
+                    {% elif txn.type == 'drop' %}
+                        <span class="badge badge-warning">Drop</span>
+                    {% else %}
+                        <span class="badge">{{ txn.type or 'N/A' }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if txn.players_added %}
+                        {% for player in txn.players_added %}
+                            {{ player }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>
+                    {% if txn.players_dropped %}
+                        {% for player in txn.players_dropped %}
+                            {{ player }}{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td style="max-width: 300px;">{{ txn.description or 'N/A' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No transaction data available.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

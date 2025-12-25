@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ESPN Fantasy Dashboard{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header-info {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .nav {
+            background: white;
+            padding: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        
+        .nav li {
+            flex: 1;
+            min-width: 120px;
+        }
+        
+        .nav a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .nav a:hover {
+            background: #f5f5f5;
+            border-bottom-color: #667eea;
+        }
+        
+        .nav a.active {
+            background: #f5f5f5;
+            border-bottom-color: #667eea;
+            font-weight: 600;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background: #f8f9fa;
+            color: #667eea;
+            font-weight: 600;
+            position: sticky;
+            top: 60px;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .filter-bar {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        
+        select, input {
+            padding: 0.5rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        button {
+            padding: 0.5rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            table {
+                font-size: 0.9rem;
+            }
+            
+            th, td {
+                padding: 0.5rem;
+            }
+            
+            .nav a {
+                padding: 0.75rem 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    {% block extra_styles %}{% endblock %}
+</head>
+<body>
+    <div class="header">
+        <h1>🏈 ESPN Fantasy Football Dashboard</h1>
+        <div class="header-info">
+            League ID: {{ league_id or 'N/A' }}
+            {% if available_seasons %}
+            | Season: 
+            <select id="seasonSelect" onchange="changeSeason()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.9rem;">
+                {% for season in available_seasons %}
+                <option value="{{ season }}" {% if season == selected_season %}selected{% endif %}>{{ season }}</option>
+                {% endfor %}
+            </select>
+            {% else %}
+            | Season: {{ season_year or 'N/A' }}
+            {% endif %}
+            {% if scraped_at %}
+            | Last Updated: {{ scraped_at[:10] }} {{ scraped_at[11:19] }}
+            {% endif %}
+        </div>
+    </div>
+    
+    <script>
+    function changeSeason() {
+        const season = document.getElementById('seasonSelect').value;
+        const url = new URL(window.location.href);
+        url.searchParams.set('season', season);
+        window.location.href = url.toString();
+    }
+    </script>
+    
+    <nav class="nav">
+        <ul>
+            <li><a href="/?season={{ selected_season }}" class="{% if request.path == '/' %}active{% endif %}">🏆 Standings</a></li>
+            <li><a href="/matchups?season={{ selected_season }}" class="{% if request.path == '/matchups' %}active{% endif %}">📊 Matchups & Rosters</a></li>
+            <li><a href="/draft?season={{ selected_season }}" class="{% if request.path == '/draft' %}active{% endif %}">🎯 Draft</a></li>
+            <li><a href="/transactions?season={{ selected_season }}" class="{% if request.path == '/transactions' %}active{% endif %}">🔄 Transactions</a></li>
+            <li><a href="/validation?season={{ selected_season }}" class="{% if request.path == '/validation' %}active{% endif %}">✅ Validation</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        {% if error %}
+        <div class="error">
+            <strong>Error:</strong> {{ error }}
+        </div>
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+    </div>
+    
+    <div class="footer">
+        Powered by Gemini 3 Flash AI Vision | ESPN Fantasy Football Scraper
+    </div>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
+

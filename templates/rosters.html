@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Rosters - ESPN Fantasy Dashboard{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Team Rosters</h2>
+    
+    <div class="filter-bar">
+        <label for="team-select">Select Team:</label>
+        <select id="team-select" onchange="window.location.href='/rosters?team=' + encodeURIComponent(this.value)">
+            {% for team in team_names %}
+            <option value="{{ team }}" {% if team == selected_team %}selected{% endif %}>
+                {{ team }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    
+    {% if team_roster %}
+    <h3 style="margin-top: 1.5rem; color: #667eea;">{{ team_roster.team_name }}</h3>
+    
+    <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Starters</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Position</th>
+                <th>NFL Team</th>
+                <th>Points</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in team_roster.starters %}
+            <tr>
+                <td><strong>{{ player.player_name or 'Unknown' }}</strong></td>
+                <td><span class="badge badge-info">{{ player.position or 'N/A' }}</span></td>
+                <td>{{ player.nfl_team or 'N/A' }}</td>
+                <td><strong>{{ "%.2f"|format(player.points or 0) }}</strong></td>
+                <td>{{ player.status or 'Active' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <h4 style="margin-top: 1.5rem; margin-bottom: 0.5rem;">Bench</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Position</th>
+                <th>NFL Team</th>
+                <th>Points</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in team_roster.bench %}
+            <tr style="opacity: 0.7;">
+                <td>{{ player.player_name or 'Unknown' }}</td>
+                <td><span class="badge badge-info">{{ player.position or 'N/A' }}</span></td>
+                <td>{{ player.nfl_team or 'N/A' }}</td>
+                <td>{{ "%.2f"|format(player.points or 0) }}</td>
+                <td>{{ player.status or 'Active' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No roster data available for this team.</p>
+    {% endif %}
+</div>
+{% endblock %}
+

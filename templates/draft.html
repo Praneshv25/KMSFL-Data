@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Draft Recap - ESPN Fantasy Dashboard{% endblock %}
+
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-box">
+        <div class="stat-label">Draft Type</div>
+        <div class="stat-value" style="font-size: 1.5rem;">{{ draft_data.draft_type or 'N/A' }}</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Draft Date</div>
+        <div class="stat-value" style="font-size: 1.5rem;">{{ draft_data.draft_date or 'N/A' }}</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Total Picks</div>
+        <div class="stat-value">{{ total_picks }}</div>
+    </div>
+    <div class="stat-box">
+        <div class="stat-label">Season</div>
+        <div class="stat-value">{{ season_year }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Draft Picks</h2>
+    
+    {% if picks %}
+    <table>
+        <thead>
+            <tr>
+                <th>Overall</th>
+                <th>Round</th>
+                <th>Pick</th>
+                <th>Team</th>
+                <th>Player</th>
+                <th>Position</th>
+                <th>NFL Team</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pick in picks %}
+            <tr>
+                <td><strong>#{{ pick.overall_pick or 'N/A' }}</strong></td>
+                <td>{{ pick.round or 'N/A' }}</td>
+                <td>{{ pick.pick or 'N/A' }}</td>
+                <td>{{ pick.team or 'N/A' }}</td>
+                <td><strong>{{ pick.player_name or 'Unknown' }}</strong></td>
+                <td>
+                    <span class="badge badge-info">{{ pick.position or 'N/A' }}</span>
+                </td>
+                <td>{{ pick.nfl_team or '' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No draft data available for this season.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
