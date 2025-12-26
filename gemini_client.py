@@ -2,6 +2,7 @@
 Gemini 3 Flash Vision Client for Screenshot Analysis
 """
 import google.generativeai as genai
+from google.generativeai import types
 from PIL import Image
 import io
 import json
@@ -60,12 +61,13 @@ class GeminiVisionClient:
             # Convert bytes to PIL Image
             image = Image.open(io.BytesIO(screenshot_bytes))
             
-            # Generate content with vision
+            # Generate content with vision (with extended timeout)
             response = self.model.generate_content(
                 [prompt, image],
                 generation_config=genai.GenerationConfig(
                     temperature=temperature,
-                )
+                ),
+                request_options={"timeout": 10000}
             )
             
             return response.text
