@@ -84,8 +84,15 @@ class HistoricalESPNScraper(ESPNFantasyScraper):
                         self.page.goto(box_score_url, wait_until="load", timeout=40000)
                         time.sleep(3)  # Give extra time for page to settle
                         
-                        # Take screenshot of box score
-                        box_screenshot = self.page.screenshot()
+                        # Scroll to load all players (bench + IR)
+                        for _ in range(3):
+                            self.page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                            time.sleep(0.5)
+                        self.page.evaluate("window.scrollTo(0, 0)")
+                        time.sleep(1)
+                        
+                        # Take full-page screenshot to capture starters + bench + IR
+                        box_screenshot = self.page.screenshot(full_page=True)
                         
                         # If we got here, navigation worked, break out of retry loop
                         break
@@ -138,7 +145,7 @@ class HistoricalESPNScraper(ESPNFantasyScraper):
                     
                     matchup_data = self.gemini.extract_json_from_screenshot(
                         box_screenshot,
-                        f"Extract complete box score data. Include: both team names, final scores, projected scores, and ALL players from BOTH teams with their positions, NFL teams, actual points, projected points, and whether they started (in lineup) or were benched. Extract every visible player.",
+                        f"Extract complete box score data from this full-page screenshot. Include: both team names, final scores, projected scores, and EVERY SINGLE PLAYER from BOTH teams including STARTERS, BENCH players, and IR players. For each player include: player name, position, NFL team, actual points scored, projected points, and whether they started (true) or were on bench/IR (false). This is a full-page screenshot so make sure to extract ALL players visible on the entire page, not just the starting lineup.",
                         box_schema
                     )
                     
