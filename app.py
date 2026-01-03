@@ -16,6 +16,142 @@ app.config['SECRET_KEY'] = 'espn-fantasy-scraper-secret-key'
 # Initialize data manager
 data_manager = DataManager()
 
+# Database query functions
+def load_from_database(season, source):
+    """Load data from SQLite database"""
+    import sqlite3
+    
+    conn = sqlite3.connect(config.DB_FILE)
+    conn.row_factory = sqlite3.Row  # Return rows as dictionaries
+    cursor = conn.cursor()
+    
+    data = {
+        '_source': source,
+        'season_year': season,
+        'standings': [],
+        'matchups': {},
+        'draft': {'picks': []},
+        'scraped_at': datetime.now().isoformat()
+    }
+    
+    # Load standings
+    cursor.execute("""
+        SELECT * FROM teams 
+        WHERE season_year = ? AND data_source = ?
+        ORDER BY rank
+    """, (season, source))
+    
+    for row in cursor.fetchall():
+        data['standings'].append({
+            'rank': row['rank'],
+            'team_name': row['team_name'],
+            'owner': row['owner'],
+            'wins': row['wins'],
+            'losses': row['losses'],
+            'ties': row['ties'],
+            'points_for': row['points_for'],
+            'points_against': row['points_against']
+        })
+    
+    # Load matchups with rosters
+    cursor.execute("""
+        SELECT DISTINCT week FROM matchups 
+        WHERE season_year = ? AND data_source = ?
+        ORDER BY week
+    """, (season, source))
+    
+    weeks = [row['week'] for row in cursor.fetchall()]
+    
+    for week in weeks:
+        cursor.execute("""
+            SELECT * FROM matchups
+            WHERE season_year = ? AND data_source = ? AND week = ?
+        """, (season, source, week))
+        
+        week_matchups = []
+        for matchup_row in cursor.fetchall():
+            matchup = {
+                'week': matchup_row['week'],
+                'season': matchup_row['season_year'],
+                'matchup_id': matchup_row['matchup_id'],
+                'home_team': matchup_row['home_team'],
+                'away_team': matchup_row['away_team'],
+                'home_score': matchup_row['home_score'],
+                'away_score': matchup_row['away_score'],
+                'home_projected': matchup_row['home_projected'],
+                'away_projected': matchup_row['away_projected'],
+                'home_roster': [],
+                'away_roster': []
+            }
+            
+            # Add optional fields
+            if matchup_row['bracket_type']:
+                matchup['bracket_type'] = matchup_row['bracket_type']
+            if matchup_row['round']:
+                matchup['round'] = matchup_row['round']
+            if matchup_row['is_two_week_playoff']:
+                matchup['is_two_week_playoff'] = matchup_row['is_two_week_playoff']
+                matchup['home_total_score'] = matchup_row['home_total_score']
+                matchup['away_total_score'] = matchup_row['away_total_score']
+            
+            # Load rosters for this matchup
+            cursor.execute("""
+                SELECT * FROM matchup_rosters
+                WHERE season_year = ? AND week = ? AND matchup_id = ? AND team_name = ?
+                ORDER BY started DESC, position
+            """, (season, week, matchup_row['matchup_id'], matchup_row['home_team']))
+            
+            for player_row in cursor.fetchall():
+                matchup['home_roster'].append({
+                    'player_name': player_row['player_name'],
+                    'position': player_row['position'],
+                    'nfl_team': player_row['nfl_team'],
+                    'points': player_row['points'],
+                    'projected': player_row['projected'],
+                    'started': bool(player_row['started'])
+                })
+            
+            cursor.execute("""
+                SELECT * FROM matchup_rosters
+                WHERE season_year = ? AND week = ? AND matchup_id = ? AND team_name = ?
+                ORDER BY started DESC, position
+            """, (season, week, matchup_row['matchup_id'], matchup_row['away_team']))
+            
+            for player_row in cursor.fetchall():
+                matchup['away_roster'].append({
+                    'player_name': player_row['player_name'],
+                    'position': player_row['position'],
+                    'nfl_team': player_row['nfl_team'],
+                    'points': player_row['points'],
+                    'projected': player_row['projected'],
+                    'started': bool(player_row['started'])
+                })
+            
+            week_matchups.append(matchup)
+        
+        data['matchups'][str(week)] = week_matchups
+    
+    # Load draft picks
+    cursor.execute("""
+        SELECT * FROM draft_picks
+        WHERE season_year = ? AND data_source = ?
+        ORDER BY overall_pick
+    """, (season, source))
+    
+    for row in cursor.fetchall():
+        data['draft']['picks'].append({
+            'round': row['round'],
+            'pick': row['pick'],
+            'overall_pick': row['overall_pick'],
+            'team': row['team'],
+            'player_name': row['player_name'],
+            'position': row['position'],
+            'nfl_team': row['nfl_team']
+        })
+    
+    conn.close()
+    return data
+
 
 def get_available_seasons():
     """Get list of all available seasons from JSON files (both ESPN and Sleeper)"""
@@ -55,7 +191,11 @@ def get_available_seasons():
 def load_json_data(season=None, source=None):
     """Load data for a specific season (ESPN or Sleeper)"""
     if season and source:
-        # Load specific season with known source
+        # Use database if configured (for cloud deployment)
+        if config.USE_DATABASE:
+            return load_from_database(season, source)
+        
+        # Otherwise load from JSON files
         if source == 'espn':
             pattern = os.path.join(config.DATA_DIR, f"espn_league_*_{season}_historical.json")
         else:  # sleeper
@@ -136,6 +276,63 @@ def sort_roster_by_position(roster):
     
     # Combine: starters first, then bench
     return starters + bench
+
+
+def normalize_espn_roster(roster, is_bench=False):
+    """Convert old ESPN roster format (2019) to new format"""
+    normalized = []
+    for player in roster:
+        # Handle old format (2019) - has 'player' instead of 'player_name'
+        if 'player' in player and 'player_name' not in player:
+            # Parse team_pos like "Ten QB" to get team and position
+            team_pos = player.get('team_pos') or ''
+            parts = team_pos.split() if team_pos else []
+            nfl_team = parts[0] if parts else ''
+            position = parts[1] if len(parts) > 1 else player.get('slot', 'N/A')
+            
+            normalized_player = {
+                'player_name': player.get('player'),
+                'position': position,
+                'nfl_team': nfl_team,
+                'points': player.get('fpts', 0),
+                'projected': player.get('proj', 0),
+                'started': not is_bench and player.get('slot', '').lower() != 'bench'
+            }
+            normalized.append(normalized_player)
+        else:
+            # Already in new format
+            normalized.append(player)
+    
+    return normalized
+
+
+def normalize_espn_data(data):
+    """Normalize ESPN data to handle different field name formats (2019 vs later years)"""
+    matchups = data.get('matchups', {})
+    
+    for week, week_matchups in matchups.items():
+        for matchup in week_matchups:
+            # Normalize home_roster
+            if matchup.get('home_roster'):
+                matchup['home_roster'] = normalize_espn_roster(matchup['home_roster'])
+            
+            # Normalize away_roster  
+            if matchup.get('away_roster'):
+                matchup['away_roster'] = normalize_espn_roster(matchup['away_roster'])
+            
+            # Normalize home_bench (if exists as separate field)
+            if matchup.get('home_bench'):
+                bench_normalized = normalize_espn_roster(matchup['home_bench'], is_bench=True)
+                matchup['home_roster'].extend(bench_normalized)
+                del matchup['home_bench']
+            
+            # Normalize away_bench (if exists as separate field)
+            if matchup.get('away_bench'):
+                bench_normalized = normalize_espn_roster(matchup['away_bench'], is_bench=True)
+                matchup['away_roster'].extend(bench_normalized)
+                del matchup['away_bench']
+    
+    return data
 
 
 def normalize_data(data, source):
@@ -332,9 +529,9 @@ def normalize_data(data, source):
         
         return normalized
     else:
-        # ESPN data is already in the right format
+        # ESPN data - normalize field names (handles 2019 format)
         data['_source'] = 'espn'
-        return data
+        return normalize_espn_data(data)
 
 
 @app.route('/')

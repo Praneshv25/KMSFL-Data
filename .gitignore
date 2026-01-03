@@ -1,15 +1,9 @@
-# Environment variables
-.env
-
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-env/
-venv/
-ENV/
 build/
 develop-eggs/
 dist/
@@ -26,20 +20,56 @@ wheels/
 .installed.cfg
 *.egg
 
-# Data files
-data/
-espn_cookies.json
-*.db
-*.json
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Environment variables
+.env
+.env.local
+
+# Data files (can be large)
+data/*.json
+data/screenshots/
+data/playoff_screenshots/
+data/user_screenshots/
+
+# Keep database and important files
+!data/.gitkeep
+!data/espn_fantasy.db
 
 # IDE
-.idea/
 .vscode/
+.idea/
 *.swp
 *.swo
 *~
+.DS_Store
+
+# Playwright
+.auth/
+
+# Cookies (sensitive)
+espn_cookies.json
+
+# Logs
+*.log
+logs/
 
 # OS
 .DS_Store
 Thumbs.db
 
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints
+
+# Temporary files
+*.tmp
+*.temp

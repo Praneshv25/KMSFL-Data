@@ -1,131 +1,203 @@
-# ESPN Fantasy Football AI Scraper
+# Fantasy Football Data Dashboard
 
-An intelligent web scraper that uses Google's Gemini 3 Flash AI model to extract comprehensive data from your ESPN Fantasy Football league.
+A comprehensive fantasy football data extraction and visualization system supporting both ESPN (2019-2024) and Sleeper (2025+) leagues.
 
 ## Features
 
-- 🤖 **AI-Powered Extraction**: Uses Gemini 3 Flash vision to intelligently read ESPN pages
-- 🍪 **Cookie Authentication**: Login once, scraper remembers your session
-- 📊 **Comprehensive Data**: Extracts standings, matchups, rosters, transactions, and player stats
-- ✅ **Data Validation**: AI verifies extracted data matches what's visible on ESPN
-- 🌐 **Web Dashboard**: Flask-based interface to view and validate all data
-- 💾 **Dual Storage**: Saves to both JSON (easy inspection) and SQLite (historical queries)
+- 🤖 **AI-Powered ESPN Scraping**: Uses Gemini 3 Flash vision to extract ESPN data
+- 🔌 **Sleeper API Integration**: Official Sleeper REST API for 2025+ data
+- 📊 **Comprehensive Data**: Standings, matchups, box scores, drafts, projections
+- 🌐 **Web Dashboard**: Flask-based interface to view all historical data
+- 💾 **Dual Storage**: JSON files + SQLite database for cloud deployment
+- 📈 **Player Projections**: Half-PPR projections for all Sleeper matchups
+- 🏆 **Playoff Tracking**: Bracket labels and two-week playoff support
 
-## Setup
+## Quick Start
 
 ### 1. Install Dependencies
 
 ```bash
+# Create conda environment (recommended)
+conda create -n ff-dashboard python=3.10 -y
+conda activate ff-dashboard
+
+# Install packages
 pip install -r requirements.txt
-playwright install chromium
+
+# For ESPN scraping only
+playwright install firefox
 ```
 
-### 2. Configure API Key
+### 2. Configure
 
-Copy the example environment file and add your credentials:
+Copy `.env.example` to `.env` and set:
+- `GEMINI_API_KEY` - For ESPN scraping (get from https://aistudio.google.com/apikey)
+- `LEAGUE_ID` - Your ESPN league ID
+- `SEASON_YEAR` - Current season
 
-```bash
-cp .env.example .env
-```
-
-Edit `.env` and add:
-- Your Gemini API key (get it from https://makersuite.google.com/app/apikey)
-- Your ESPN league ID (find it in your league's URL)
-- Current season year
-
-### 3. First Run
-
-```bash
-python espn_scraper.py
-```
-
-On first run:
-1. Browser will open to ESPN Fantasy
-2. Manually log in with your credentials
-3. Press Enter in terminal when logged in
-4. Scraper will save cookies and begin extracting data
-
-### 4. View Data in Dashboard
+### 3. Run Dashboard
 
 ```bash
 python app.py
-```
-
-Open your browser to `http://localhost:5000` to view the dashboard.
-
-## Usage
-
-### Scrape League Data
-
-```bash
-# Uses saved cookies (fast)
-python espn_scraper.py
-```
-
-### Start Dashboard
-
-```bash
-python app.py
-# Visit http://localhost:5000
+# Visit http://127.0.0.1:5001
 ```
 
 ## Project Structure
 
 ```
 .
-├── espn_scraper.py      # Main scraper with Gemini 3 vision
-├── data_manager.py      # Database and JSON storage
-├── app.py               # Flask web dashboard
-├── config.py            # Configuration settings
-├── requirements.txt     # Python dependencies
-├── templates/           # HTML templates for dashboard
+├── app.py                    # Flask web dashboard
+├── config.py                 # Configuration settings
+├── data_manager.py           # Database utilities
+├── populate_database.py      # Populate DB from JSON files
+├── requirements.txt          # Python dependencies
+│
+├── scrapers/                 # All data scraping tools
+│   ├── espn/                 # ESPN scraper (AI-powered)
+│   │   ├── historical_scraper.py
+│   │   ├── espn_scraper.py
+│   │   ├── gemini_client.py
+│   │   ├── auth_manager.py
+│   │   └── data_extraction.py
+│   │
+│   └── sleeper/              # Sleeper API scraper
+│       ├── sleeper_scraper.py
+│       ├── sleeper_client.py
+│       ├── run_sleeper_scrape.py
+│       ├── fetch_sleeper_projections.py
+│       └── enhance_sleeper_data.py
+│
+├── templates/                # Flask HTML templates
 │   ├── base.html
 │   ├── index.html
 │   ├── matchups.html
-│   ├── rosters.html
-│   ├── transactions.html
-│   └── validation.html
-└── data/               # Generated data (gitignored)
-    ├── espn_fantasy.db
-    ├── espn_league_*.json
-    └── screenshots/
+│   ├── draft.html
+│   └── transactions.html
+│
+└── data/                     # Generated data (gitignored)
+    ├── espn_fantasy.db       # SQLite database
+    ├── espn_league_*.json    # ESPN historical data
+    └── sleeper_*.json        # Sleeper data
 ```
 
-## How It Works
+## Usage
 
-1. **Browser Automation**: Playwright controls a Chrome browser to navigate ESPN
-2. **AI Vision**: Gemini 3 Flash analyzes screenshots to extract data
-3. **Smart Navigation**: AI identifies buttons and tabs to click
-4. **Data Extraction**: Structured data extracted from visual page content
-5. **Validation**: AI cross-checks extracted data with screenshots
-6. **Storage**: Data saved to both JSON and SQLite for flexibility
-7. **Visualization**: Flask dashboard displays all extracted data
+### ESPN Scraping (2019-2024)
+
+```bash
+# First time: Browser opens, login manually
+python scrapers/espn/historical_scraper.py
+
+# Subsequent runs: Uses saved cookies
+python scrapers/espn/historical_scraper.py
+```
+
+**Features:**
+- Cookie-based authentication
+- Full box score rosters with projections
+- Draft recaps
+- Transactions
+- Handles 2019 two-week playoffs
+
+### Sleeper Scraping (2025+)
+
+```bash
+# 1. Scrape league data
+python scrapers/sleeper/run_sleeper_scrape.py
+
+# 2. Fetch player projections
+python scrapers/sleeper/fetch_sleeper_projections.py
+
+# 3. View in dashboard
+python app.py
+```
+
+**Features:**
+- No authentication required
+- Weekly matchups with rosters
+- Half-PPR projections
+- Draft picks
+- Playoff brackets
+
+### Database Mode (Cloud Deployment)
+
+```bash
+# Populate database from JSON files
+python populate_database.py
+
+# Run in database mode
+USE_DATABASE=true python app.py
+```
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for cloud deployment instructions.
+
+## Dashboard Pages
+
+- **Standings** - League rankings, wins/losses, points
+- **Matchups** - Weekly scores, box scores, playoff brackets
+- **Draft Recap** - All draft picks by round
+- **Transactions** - Trades, adds, drops (ESPN only)
+- **Validation** - Compare extracted data with screenshots (ESPN only)
+
+## Data Sources
+
+### ESPN (2019-2024)
+- **Method**: AI-powered web scraping with Gemini Vision
+- **Auth**: Cookie-based (login once)
+- **Data**: Complete historical data with player-level details
+
+### Sleeper (2025+)
+- **Method**: Official REST API
+- **Auth**: None required (public data)
+- **Data**: Real-time data with player projections
 
 ## Troubleshooting
 
-### "Module not found" errors
-```bash
-pip install -r requirements.txt
-playwright install chromium
-```
+### ESPN Scraper
+- **Login issues**: Delete `espn_cookies.json` and re-login
+- **Timeout errors**: Increase `PAGE_LOAD_TIMEOUT` in config.py
+- **404 Gemini error**: Check model name is `gemini-3-flash-preview`
 
-### Login issues
-- Delete `espn_cookies.json` and run scraper again
-- Manually log in when browser opens
-- Make sure your ESPN account has access to the league
+### Sleeper Scraper
+- **No data**: Verify username and league ID in `run_sleeper_scrape.py`
+- **Missing player names**: Run `enhance_sleeper_data.py`
+- **Missing projections**: Run `fetch_sleeper_projections.py`
 
-### Gemini API errors
-- Check your API key in `.env`
-- Verify you have API access at https://makersuite.google.com/
+### Dashboard
+- **Port conflict**: Change `FLASK_PORT` in config.py
+- **Missing season**: Check JSON files exist in `data/` folder
+- **Empty rosters**: Re-run scraper or populate database
 
-## Notes
+## Configuration
 
-- Scraper respects ESPN's terms of service
-- Uses cookie-based authentication (no password storage)
-- Data is stored locally only
-- Requires manual login on first run or if cookies expire
+Edit `config.py` for:
+- `GEMINI_API_KEY` - Gemini API key
+- `GEMINI_MODEL` - Model name (default: `gemini-3-flash-preview`)
+- `LEAGUE_ID` - ESPN league ID
+- `SEASON_YEAR` - Current season
+- `FLASK_PORT` - Dashboard port (default: 5001)
+- `USE_DATABASE` - Use DB instead of JSON (for cloud)
+
+## Documentation
+
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Cloud deployment guide
+- [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) - Detailed project documentation
+- [scrapers/README.md](scrapers/README.md) - Scraper documentation
+
+## Requirements
+
+- Python 3.10+
+- Gemini API key (for ESPN scraping)
+- ESPN account with league access
+- Sleeper username (for Sleeper scraping)
 
 ## License
 
 MIT License - Use freely for personal fantasy football analysis!
 
+## Notes
+
+- Respects ESPN's terms of service
+- Cookie-based auth (no password storage)
+- Data stored locally only
+- Sleeper API is rate-limited (~1000 req/min)

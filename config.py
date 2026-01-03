@@ -31,4 +31,5 @@ PAGE_LOAD_TIMEOUT = 10000  # milliseconds
 FLASK_HOST = "127.0.0.1"
 FLASK_PORT = 5001  # Changed from 5000 to avoid conflict with macOS AirPlay
 FLASK_DEBUG = True
+USE_DATABASE = os.getenv("USE_DATABASE", "false").lower() == "true"  # Set to true for cloud deployment
 
