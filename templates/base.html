@@ -243,7 +243,9 @@
             | Season: 
             <select id="seasonSelect" onchange="changeSeason()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.9rem;">
                 {% for season in available_seasons %}
-                <option value="{{ season }}" {% if season == selected_season %}selected{% endif %}>{{ season }}</option>
+                <option value="{{ season.year if season is mapping else season }}" {% if (season.year if season is mapping else season) == selected_season %}selected{% endif %}>
+                    {{ season.year if season is mapping else season }}{% if season is mapping %} ({{ season.source|upper }}){% endif %}
+                </option>
                 {% endfor %}
             </select>
             {% else %}

@@ -3,6 +3,7 @@ Historical ESPN Fantasy Football Scraper
 Extracts data from multiple seasons (2019-2024) with box score details
 """
 import time
+import re
 from datetime import datetime
 from typing import Dict, Any, List
 from espn_scraper import ESPNFantasyScraper
@@ -20,7 +21,7 @@ class HistoricalESPNScraper(ESPNFantasyScraper):
         Extract matchup data using direct box score URLs
         
         Args:
-            week: Week number
+            week: Week number (matchupPeriodId)
             season: Season year
             
         Returns:
@@ -28,9 +29,51 @@ class HistoricalESPNScraper(ESPNFantasyScraper):
         """
         print(f"\n  Extracting Week {week} (Season {season})...")
         
+        # Check if this is a two-week playoff matchup (2019 matchupPeriodId 14 and 15)
+        # matchupPeriodId=14 contains weeks 14-15, matchupPeriodId=15 contains weeks 16-17
+        is_two_week_playoff = season == 2019 and week in [14, 15]
+        
         # First, go to scoreboard to get team IDs
+        # For two-week playoffs, add mSPID parameter to show the second week's matchups
         scoreboard_url = f"https://fantasy.espn.com/football/league/scoreboard?leagueId={config.LEAGUE_ID}&seasonId={season}&matchupPeriodId={week}"
+        if is_two_week_playoff:
+            # Show the second week's scores on scoreboard to see all matchups
+            if week == 14:
+                scoreboard_url += "&mSPID=15"  # Show week 15 scores
+            elif week == 15:
+                scoreboard_url += "&mSPID=17"  # Show week 17 scores
+        
         self.page.goto(scoreboard_url, wait_until="networkidle", timeout=30000)
+        time.sleep(3)
+        
+        # Scroll down the page to load all matchups (Championship, Consolation, etc.)
+        print(f"    Scrolling to load all matchups...")
+        for _ in range(5):
+            self.page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+            time.sleep(0.5)
+        self.page.evaluate("window.scrollTo(0, 0)")
+        time.sleep(1)
+        
+        # For playoffs, try to expand all bracket sections
+        # This ensures we see all matchups, not just the main bracket
+        try:
+            # Look for common button/link text that might expand sections
+            expand_keywords = ['Show', 'Expand', 'View', 'Consolation', 'Bracket', 'More']
+            for keyword in expand_keywords:
+                try:
+                    buttons = self.page.locator(f'button:has-text("{keyword}"), a:has-text("{keyword}")').all()
+                    for button in buttons[:3]:  # Limit to first 3 per keyword
+                        try:
+                            if button.is_visible():
+                                button.click()
+                                time.sleep(0.5)
+                        except:
+                            pass
+                except:
+                    pass
+        except:
+            pass
+        
         time.sleep(2)
         
         # Get page content to find all box score links
@@ -46,69 +89,113 @@ class HistoricalESPNScraper(ESPNFantasyScraper):
                 return []
             
             # Get unique box score URLs
+            # Note: Each matchup appears multiple times (one link per team), 
+            # but we need to visit each matchup only once
             box_score_urls = []
-            seen_urls = set()
+            
+            print(f"    Found {len(box_score_links)} total box score links on page")
             
             for link in box_score_links:
                 try:
                     href = link.get_attribute('href')
-                    if href and 'boxscore' in href and 'teamId' in href:
-                        # Only include links that have teamId parameter (actual box scores)
+                    if href and 'boxscore' in href:
                         # Make it a full URL if it's relative
                         if href.startswith('/'):
                             full_url = f"https://fantasy.espn.com{href}"
                         else:
                             full_url = href
                         
-                        # Only add unique URLs
-                        if full_url not in seen_urls:
+                        # Collect all URLs first
+                        if full_url not in box_score_urls:
                             box_score_urls.append(full_url)
-                            seen_urls.add(full_url)
                 except:
                     continue
             
-            print(f"    Found {len(box_score_urls)} unique box score URLs")
+            print(f"    Collected {len(box_score_urls)} unique URLs")
+            
+            # Deduplicate by removing teamId parameter to get unique matchups
+            # Multiple URLs with different teamIds point to the same matchup
+            final_urls = []
+            seen_matchup_keys = set()
+            
+            for url in box_score_urls:
+                # Create a key that identifies unique matchups
+                # Remove teamId and view parameters to create the key
+                key = re.sub(r'[&?]teamId=\d+', '', url)
+                key = re.sub(r'[&?]view=[^&]*', '', key)
+                
+                if key not in seen_matchup_keys:
+                    final_urls.append(url)
+                    seen_matchup_keys.add(key)
+            
+            print(f"    Found {len(final_urls)} unique matchups")
             
             all_matchup_data = []
             
+            # For two-week playoff matchups, we need to extract both weeks separately
+            scoring_periods = []
+            if is_two_week_playoff:
+                # matchupPeriodId=14 contains weeks 14 and 15
+                # matchupPeriodId=15 contains weeks 16 and 17
+                if week == 14:
+                    scoring_periods = [14, 15]
+                elif week == 15:
+                    scoring_periods = [16, 17]
+                print(f"    Two-week playoff detected - will extract weeks {scoring_periods[0]} and {scoring_periods[1]} separately")
+            else:
+                scoring_periods = [week]
+            
             # For each unique box score URL, navigate and extract
-            for i, box_score_url in enumerate(box_score_urls):
-                retry_count = 0
-                max_retries = 2
-                
-                while retry_count <= max_retries:
-                    try:
-                        print(f"    Extracting box score {i+1}/{len(box_score_urls)}..." + (f" (retry {retry_count})" if retry_count > 0 else ""))
-                        
-                        # Navigate with timeout
-                        self.page.goto(box_score_url, wait_until="load", timeout=40000)
-                        time.sleep(3)  # Give extra time for page to settle
-                        
-                        # Scroll to load all players (bench + IR)
-                        for _ in range(3):
-                            self.page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-                            time.sleep(0.5)
-                        self.page.evaluate("window.scrollTo(0, 0)")
-                        time.sleep(1)
-                        
-                        # Take full-page screenshot to capture starters + bench + IR
-                        box_screenshot = self.page.screenshot(full_page=True)
-                        
-                        # If we got here, navigation worked, break out of retry loop
-                        break
-                        
-                    except Exception as nav_error:
-                        retry_count += 1
-                        if retry_count > max_retries:
-                            print(f"      ✗ Failed after {max_retries} retries: {nav_error}")
-                            raise  # Re-raise to be caught by outer try-except
+            for scoring_period in scoring_periods:
+                for i, base_box_score_url in enumerate(final_urls):
+                    retry_count = 0
+                    max_retries = 2
+                    
+                    # Add or update the scoringPeriodId parameter in the URL
+                    if '?' in base_box_score_url:
+                        # Check if scoringPeriodId already exists
+                        if 'scoringPeriodId=' in base_box_score_url:
+                            box_score_url = re.sub(r'scoringPeriodId=\d+', f'scoringPeriodId={scoring_period}', base_box_score_url)
                         else:
-                            print(f"      ⚠ Timeout, retrying...")
-                            time.sleep(3)
-                            continue
+                            box_score_url = f"{base_box_score_url}&scoringPeriodId={scoring_period}"
+                    else:
+                        box_score_url = f"{base_box_score_url}?scoringPeriodId={scoring_period}"
+                    
+                    week_label = f" (Week {scoring_period})" if is_two_week_playoff else ""
+                    
+                    while retry_count <= max_retries:
+                        try:
+                            print(f"    Extracting box score {i+1}/{len(final_urls)}{week_label}..." + (f" (retry {retry_count})" if retry_count > 0 else ""))
+                            
+                            # Navigate with timeout
+                            self.page.goto(box_score_url, wait_until="load", timeout=40000)
+                            time.sleep(3)  # Give extra time for page to settle
+                            
+                            # Scroll to load all players (bench + IR)
+                            for _ in range(3):
+                                self.page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+                                time.sleep(0.5)
+                            self.page.evaluate("window.scrollTo(0, 0)")
+                            time.sleep(1)
+                            
+                            # Take full-page screenshot to capture starters + bench + IR
+                            box_screenshot = self.page.screenshot(full_page=True)
+                            
+                            # If we got here, navigation worked, break out of retry loop
+                            break
+                            
+                        except Exception as nav_error:
+                            retry_count += 1
+                            if retry_count > max_retries:
+                                print(f"      ✗ Failed after {max_retries} retries: {nav_error}")
+                                raise  # Re-raise to be caught by outer try-except
+                            else:
+                                print(f"      ⚠ Timeout, retrying...")
+                                time.sleep(3)
+                                continue
                 
                 try:
-                    # Extract detailed data
+                    # Extract box score data
                     box_schema = """
 {
     "matchup": {
@@ -150,8 +237,11 @@ class HistoricalESPNScraper(ESPNFantasyScraper):
                     )
                     
                     matchup = matchup_data.get('matchup', {})
-                    matchup['week'] = week
+                    matchup['week'] = scoring_period  # Use the specific scoring period (actual week 14, 15, 16, or 17)
                     matchup['season'] = season
+                    if is_two_week_playoff:
+                        matchup['is_two_week_playoff'] = True
+                        matchup['matchup_period_id'] = week  # Store the ESPN matchupPeriodId (14 or 15)
                     all_matchup_data.append(matchup)
                     
                     print(f"      ✓ {matchup.get('home_team')} ({len(matchup.get('home_roster', []))}) vs {matchup.get('away_team')} ({len(matchup.get('away_roster', []))})")
