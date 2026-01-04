@@ -138,6 +138,97 @@ class DataManager:
             )
         """)
         
+        # NFL weekly stats table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS nfl_weekly_stats (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                player_id TEXT,
+                player_name TEXT,
+                player_display_name TEXT,
+                position TEXT,
+                position_group TEXT,
+                headshot_url TEXT,
+                recent_team TEXT,
+                season INTEGER,
+                week INTEGER,
+                season_type TEXT,
+                opponent_team TEXT,
+                completions INTEGER,
+                attempts INTEGER,
+                passing_yards REAL,
+                passing_tds INTEGER,
+                interceptions INTEGER,
+                sacks INTEGER,
+                sack_yards REAL,
+                sack_fumbles INTEGER,
+                sack_fumbles_lost INTEGER,
+                passing_air_yards REAL,
+                passing_yards_after_catch REAL,
+                passing_first_downs INTEGER,
+                passing_epa REAL,
+                passing_2pt_conversions INTEGER,
+                carries INTEGER,
+                rushing_yards REAL,
+                rushing_tds INTEGER,
+                rushing_fumbles INTEGER,
+                rushing_fumbles_lost INTEGER,
+                rushing_first_downs INTEGER,
+                rushing_epa REAL,
+                rushing_2pt_conversions INTEGER,
+                receptions INTEGER,
+                targets INTEGER,
+                receiving_yards REAL,
+                receiving_tds INTEGER,
+                receiving_fumbles INTEGER,
+                receiving_fumbles_lost INTEGER,
+                receiving_air_yards REAL,
+                receiving_yards_after_catch REAL,
+                receiving_first_downs INTEGER,
+                receiving_epa REAL,
+                receiving_2pt_conversions INTEGER,
+                racr REAL,
+                target_share REAL,
+                air_yards_share REAL,
+                wopr REAL,
+                special_teams_tds INTEGER,
+                fantasy_points REAL,
+                fantasy_points_ppr REAL,
+                UNIQUE(player_id, season, week, season_type)
+            )
+        """)
+        
+        # NFL player mapping table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS nfl_player_mapping (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                fantasy_player_name TEXT,
+                nfl_player_id TEXT,
+                nfl_player_name TEXT,
+                nfl_player_display_name TEXT,
+                position TEXT,
+                team TEXT,
+                confidence_score REAL,
+                created_at TIMESTAMP,
+                UNIQUE(fantasy_player_name, nfl_player_id)
+            )
+        """)
+        
+        # Create indexes for faster queries
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_nfl_weekly_stats_player 
+            ON nfl_weekly_stats(player_id, season, week)
+        """)
+        
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_nfl_weekly_stats_name 
+            ON nfl_weekly_stats(player_display_name, season, week)
+        """)
+        
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_nfl_player_mapping_fantasy_name 
+            ON nfl_player_mapping(fantasy_player_name)
+        """)
+        
         conn.commit()
         conn.close()
         

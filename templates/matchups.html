@@ -66,6 +66,285 @@
         font-size: 0.9rem;
         opacity: 0.8;
     }
+    
+    /* Player link styling */
+    .player-link {
+        color: #667eea;
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+    
+    .player-link:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+    
+    /* Modal styling */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 1000;
+        overflow-y: auto;
+        padding: 20px;
+    }
+    
+    .modal-overlay.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .modal-container {
+        background: white;
+        border-radius: 12px;
+        max-width: 900px;
+        width: 100%;
+        max-height: 90vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .modal-player-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .modal-player-photo {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: white;
+        object-fit: cover;
+    }
+    
+    .modal-player-details h2 {
+        margin: 0;
+        font-size: 1.5rem;
+    }
+    
+    .modal-player-meta {
+        font-size: 0.9rem;
+        opacity: 0.9;
+        margin-top: 0.25rem;
+    }
+    
+    .modal-close {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.2s;
+    }
+    
+    .modal-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .modal-tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .modal-tab {
+        flex: 1;
+        padding: 1rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        color: #6c757d;
+        transition: all 0.2s;
+    }
+    
+    .modal-tab:hover {
+        background: #e9ecef;
+    }
+    
+    .modal-tab.active {
+        color: #667eea;
+        background: white;
+        border-bottom: 3px solid #667eea;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+        overflow-y: auto;
+        flex: 1;
+    }
+    
+    .modal-tab-content {
+        display: none;
+    }
+    
+    .modal-tab-content.active {
+        display: block;
+    }
+    
+    .stats-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+    
+    .stats-table th {
+        background: #f8f9fa;
+        padding: 0.75rem 0.5rem;
+        text-align: left;
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+        position: sticky;
+        top: 0;
+    }
+    
+    .stats-table td {
+        padding: 0.75rem 0.5rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    .stats-table tbody tr:hover {
+        background: #f8f9fa;
+    }
+    
+    .stats-table tbody tr:nth-child(even) {
+        background: #fafbfc;
+    }
+    
+    .stats-table tbody tr:nth-child(even):hover {
+        background: #f1f3f5;
+    }
+    
+    .season-summary {
+        background: #e7f5ff;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+    }
+    
+    .season-summary-item {
+        text-align: center;
+        padding: 0.5rem;
+    }
+    
+    .season-summary-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .season-summary-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #1971c2;
+        margin-top: 0.25rem;
+    }
+    
+    .loading-spinner {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+    
+    .loading-spinner::after {
+        content: "⏳";
+        font-size: 3rem;
+        display: block;
+        animation: spin 2s linear infinite;
+    }
+    
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    .error-message {
+        padding: 2rem;
+        text-align: center;
+        color: #dc3545;
+    }
+    
+    .no-data-message {
+        padding: 2rem;
+        text-align: center;
+        color: #6c757d;
+    }
+    
+    /* Expandable season rows */
+    .season-summary-row {
+        transition: background-color 0.2s;
+    }
+    
+    .season-summary-row:hover {
+        background-color: #f1f3f5;
+    }
+    
+    .expand-icon {
+        display: inline-block;
+        transition: transform 0.2s;
+        font-size: 0.8rem;
+        color: #667eea;
+    }
+    
+    .season-detail-row td {
+        padding: 0 !important;
+    }
+    
+    .season-detail-row .stats-table {
+        margin: 0;
+        box-shadow: none;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .modal-container {
+            max-height: 95vh;
+        }
+        
+        .stats-table {
+            font-size: 0.8rem;
+        }
+        
+        .stats-table th,
+        .stats-table td {
+            padding: 0.5rem 0.25rem;
+        }
+        
+        .season-summary {
+            flex-direction: column;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -130,7 +409,11 @@
                         <tbody>
                             {% for player in matchup.home_roster %}
                             <tr class="{% if player.started %}starter-row{% else %}bench-row{% endif %}">
-                                <td>{{ player.player_name or 'Unknown' }}</td>
+                                <td>
+                                    <a href="#" class="player-link" data-player="{{ player.player_name or 'Unknown' }}" data-season="{{ season_year }}">
+                                        {{ player.player_name or 'Unknown' }}
+                                    </a>
+                                </td>
                                 <td><strong>{{ player.position or 'N/A' }}</strong></td>
                                 <td>{{ player.nfl_team or '' }}</td>
                                 <td><strong>{{ "%.1f"|format(player.points or 0) }}</strong></td>
@@ -156,7 +439,11 @@
                         <tbody>
                             {% for player in matchup.away_roster %}
                             <tr class="{% if player.started %}starter-row{% else %}bench-row{% endif %}">
-                                <td>{{ player.player_name or 'Unknown' }}</td>
+                                <td>
+                                    <a href="#" class="player-link" data-player="{{ player.player_name or 'Unknown' }}" data-season="{{ season_year }}">
+                                        {{ player.player_name or 'Unknown' }}
+                                    </a>
+                                </td>
                                 <td><strong>{{ player.position or 'N/A' }}</strong></td>
                                 <td>{{ player.nfl_team or '' }}</td>
                                 <td><strong>{{ "%.1f"|format(player.points or 0) }}</strong></td>
@@ -174,4 +461,444 @@
     <p>No matchup data available for this week.</p>
     {% endif %}
 </div>
+
+<!-- Player Stats Modal -->
+<div id="playerStatsModal" class="modal-overlay">
+    <div class="modal-container">
+        <div class="modal-header">
+            <div class="modal-player-info">
+                <img id="modalPlayerPhoto" class="modal-player-photo" src="" alt="" style="display: none;">
+                <div class="modal-player-details">
+                    <h2 id="modalPlayerName">Player Name</h2>
+                    <div class="modal-player-meta">
+                        <span id="modalPlayerPosition">Position</span> • 
+                        <span id="modalPlayerTeam">Team</span>
+                    </div>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closePlayerModal()">&times;</button>
+        </div>
+        
+        <div class="modal-tabs">
+            <button id="currentSeasonTabButton" class="modal-tab active" onclick="switchTab('current')">Current Season</button>
+            <button class="modal-tab" onclick="switchTab('career')">Career Stats</button>
+        </div>
+        
+        <div class="modal-body">
+            <!-- Current Season Tab -->
+            <div id="currentSeasonTab" class="modal-tab-content active">
+                <div class="loading-spinner">Loading stats...</div>
+            </div>
+            
+            <!-- Career Stats Tab -->
+            <div id="careerStatsTab" class="modal-tab-content">
+                <div class="loading-spinner">Loading career stats...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Player stats modal functionality
+let currentPlayerData = null;
+
+// Add click handlers to all player links
+document.addEventListener('DOMContentLoaded', function() {
+    const playerLinks = document.querySelectorAll('.player-link');
+    playerLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const playerName = this.getAttribute('data-player');
+            const season = this.getAttribute('data-season');
+            if (playerName && playerName !== 'Unknown') {
+                openPlayerModal(playerName, season);
+            }
+        });
+    });
+    
+    // Close modal on overlay click
+    document.getElementById('playerStatsModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePlayerModal();
+        }
+    });
+    
+    // Close modal on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closePlayerModal();
+        }
+    });
+});
+
+function openPlayerModal(playerName, season) {
+    const modal = document.getElementById('playerStatsModal');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Store the season for use in tab display
+    currentPlayerData = { season: parseInt(season) };
+    
+    // Update tab label to show the specific season
+    const tabButton = document.getElementById('currentSeasonTabButton');
+    if (tabButton && season) {
+        tabButton.textContent = `${season} Season`;
+    }
+    
+    // Reset tabs
+    switchTab('current');
+    
+    // Show loading state
+    document.getElementById('currentSeasonTab').innerHTML = '<div class="loading-spinner">Loading stats...</div>';
+    document.getElementById('careerStatsTab').innerHTML = '<div class="loading-spinner">Loading career stats...</div>';
+    
+    // Fetch player stats with season context
+    fetchPlayerStats(playerName, season);
+}
+
+function closePlayerModal() {
+    const modal = document.getElementById('playerStatsModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    currentPlayerData = null;
+}
+
+function switchTab(tabName) {
+    // Update tab buttons
+    const tabs = document.querySelectorAll('.modal-tab');
+    tabs.forEach(tab => tab.classList.remove('active'));
+    
+    // Update tab content
+    const contents = document.querySelectorAll('.modal-tab-content');
+    contents.forEach(content => content.classList.remove('active'));
+    
+    if (tabName === 'current') {
+        tabs[0].classList.add('active');
+        document.getElementById('currentSeasonTab').classList.add('active');
+    } else {
+        tabs[1].classList.add('active');
+        document.getElementById('careerStatsTab').classList.add('active');
+    }
+}
+
+function fetchPlayerStats(playerName, season) {
+    // Include season parameter in API call if provided
+    const apiUrl = `/api/player-stats/${encodeURIComponent(playerName)}`;
+    
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                showError(data.error, data.message || '');
+                return;
+            }
+            
+            // Store season context with the data
+            data.viewingSeason = parseInt(season);
+            currentPlayerData = data;
+            
+            displayPlayerInfo(data.player_info);
+            displayCurrentSeasonStats(data);
+            displayCareerStats(data);
+        })
+        .catch(error => {
+            console.error('Error fetching player stats:', error);
+            showError('Failed to load player stats', error.message);
+        });
+}
+
+function displayPlayerInfo(playerInfo) {
+    document.getElementById('modalPlayerName').textContent = playerInfo.player_display_name || playerInfo.player_name || 'Unknown Player';
+    document.getElementById('modalPlayerPosition').textContent = playerInfo.position || 'N/A';
+    document.getElementById('modalPlayerTeam').textContent = playerInfo.team || 'FA';
+    
+    // Show headshot if available
+    const photo = document.getElementById('modalPlayerPhoto');
+    if (playerInfo.headshot_url && playerInfo.headshot_url !== 'nan' && playerInfo.headshot_url !== '') {
+        photo.src = playerInfo.headshot_url;
+        photo.style.display = 'block';
+        photo.onerror = function() {
+            this.style.display = 'none';
+        };
+    } else {
+        photo.style.display = 'none';
+    }
+}
+
+function displayCurrentSeasonStats(data) {
+    const container = document.getElementById('currentSeasonTab');
+    // Use the viewing season from matchup context, not calendar year
+    const viewingSeason = data.viewingSeason || new Date().getFullYear();
+    const currentSeasonStats = data.seasons_data[viewingSeason] || [];
+    
+    if (currentSeasonStats.length === 0) {
+        container.innerHTML = `<div class="no-data-message">No stats available for ${viewingSeason} season</div>`;
+        return;
+    }
+    
+    // Get season totals
+    const totals = data.season_totals[viewingSeason] || {};
+    
+    // Determine position type for relevant stats
+    const position = data.player_info.position;
+    const isQB = position === 'QB';
+    const isRB = position === 'RB';
+    const isWRTE = position === 'WR' || position === 'TE';
+    
+    // Build season summary
+    let summaryHTML = '<div class="season-summary">';
+    summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Games</div><div class="season-summary-value">${totals.games || 0}</div></div>`;
+    
+    if (isQB) {
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Pass Yds</div><div class="season-summary-value">${totals.passing_yards || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Pass TDs</div><div class="season-summary-value">${totals.passing_tds || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">INTs</div><div class="season-summary-value">${totals.interceptions || 0}</div></div>`;
+    } else if (isRB) {
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rush Yds</div><div class="season-summary-value">${totals.rushing_yards || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rush TDs</div><div class="season-summary-value">${totals.rushing_tds || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec</div><div class="season-summary-value">${totals.receptions || 0}</div></div>`;
+    } else if (isWRTE) {
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec</div><div class="season-summary-value">${totals.receptions || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec Yds</div><div class="season-summary-value">${totals.receiving_yards || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec TDs</div><div class="season-summary-value">${totals.receiving_tds || 0}</div></div>`;
+    }
+    
+    summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Fantasy Pts (PPR)</div><div class="season-summary-value">${(totals.fantasy_points_ppr || 0).toFixed(1)}</div></div>`;
+    summaryHTML += '</div>';
+    
+    // Build stats table
+    let tableHTML = '<table class="stats-table"><thead><tr>';
+    tableHTML += '<th>Week</th><th>Opp</th>';
+    
+    if (isQB) {
+        tableHTML += '<th>Cmp/Att</th><th>Pass Yds</th><th>Pass TD</th><th>INT</th><th>Rush Yds</th><th>Rush TD</th>';
+    } else if (isRB) {
+        tableHTML += '<th>Carries</th><th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
+    } else if (isWRTE) {
+        tableHTML += '<th>Tgt</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th><th>Rush Yds</th><th>Rush TD</th>';
+    } else {
+        tableHTML += '<th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
+    }
+    
+    tableHTML += '<th>Fant Pts</th></tr></thead><tbody>';
+    
+    // Sort by week
+    currentSeasonStats.sort((a, b) => a.week - b.week);
+    
+    currentSeasonStats.forEach(stat => {
+        tableHTML += '<tr>';
+        tableHTML += `<td><strong>${stat.week}</strong></td>`;
+        tableHTML += `<td>${stat.opponent_team || '-'}</td>`;
+        
+        if (isQB) {
+            tableHTML += `<td>${stat.completions || 0}/${stat.attempts || 0}</td>`;
+            tableHTML += `<td>${stat.passing_yards || 0}</td>`;
+            tableHTML += `<td>${stat.passing_tds || 0}</td>`;
+            tableHTML += `<td>${stat.interceptions || 0}</td>`;
+            tableHTML += `<td>${stat.rushing_yards || 0}</td>`;
+            tableHTML += `<td>${stat.rushing_tds || 0}</td>`;
+        } else if (isRB) {
+            tableHTML += `<td>${stat.carries || 0}</td>`;
+            tableHTML += `<td>${stat.rushing_yards || 0}</td>`;
+            tableHTML += `<td>${stat.rushing_tds || 0}</td>`;
+            tableHTML += `<td>${stat.receptions || 0}</td>`;
+            tableHTML += `<td>${stat.receiving_yards || 0}</td>`;
+            tableHTML += `<td>${stat.receiving_tds || 0}</td>`;
+        } else if (isWRTE) {
+            tableHTML += `<td>${stat.targets || 0}</td>`;
+            tableHTML += `<td>${stat.receptions || 0}</td>`;
+            tableHTML += `<td>${stat.receiving_yards || 0}</td>`;
+            tableHTML += `<td>${stat.receiving_tds || 0}</td>`;
+            tableHTML += `<td>${stat.rushing_yards || 0}</td>`;
+            tableHTML += `<td>${stat.rushing_tds || 0}</td>`;
+        } else {
+            tableHTML += `<td>${stat.rushing_yards || 0}</td>`;
+            tableHTML += `<td>${stat.rushing_tds || 0}</td>`;
+            tableHTML += `<td>${stat.receptions || 0}</td>`;
+            tableHTML += `<td>${stat.receiving_yards || 0}</td>`;
+            tableHTML += `<td>${stat.receiving_tds || 0}</td>`;
+        }
+        
+        tableHTML += `<td><strong>${(stat.fantasy_points_ppr || 0).toFixed(1)}</strong></td>`;
+        tableHTML += '</tr>';
+    });
+    
+    tableHTML += '</tbody></table>';
+    
+    container.innerHTML = summaryHTML + tableHTML;
+}
+
+function displayCareerStats(data) {
+    const container = document.getElementById('careerStatsTab');
+    const allStats = data.weekly_stats || [];
+    
+    if (allStats.length === 0) {
+        container.innerHTML = '<div class="no-data-message">No career stats available</div>';
+        return;
+    }
+    
+    // Group by season and show season summaries
+    const seasonTotals = data.season_totals || {};
+    const seasonsData = data.seasons_data || {};
+    const seasons = Object.keys(seasonTotals).sort((a, b) => b - a);
+    
+    const position = data.player_info.position;
+    const isQB = position === 'QB';
+    const isRB = position === 'RB';
+    const isWRTE = position === 'WR' || position === 'TE';
+    
+    let html = '<div style="margin-bottom: 1rem;"><h3>Career Summary by Season (Click to expand)</h3></div>';
+    html += '<table class="stats-table career-stats-table"><thead><tr>';
+    html += '<th style="width: 40px;"></th><th>Season</th><th>Games</th>';
+    
+    if (isQB) {
+        html += '<th>Pass Yds</th><th>Pass TD</th><th>INT</th><th>Rush Yds</th><th>Rush TD</th>';
+    } else if (isRB) {
+        html += '<th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
+    } else if (isWRTE) {
+        html += '<th>Rec</th><th>Rec Yds</th><th>Rec TD</th><th>Rush Yds</th><th>Rush TD</th>';
+    } else {
+        html += '<th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
+    }
+    
+    html += '<th>Fant Pts (PPR)</th></tr></thead><tbody>';
+    
+    seasons.forEach(season => {
+        const totals = seasonTotals[season];
+        const seasonStats = seasonsData[season] || [];
+        
+        // Season summary row (clickable)
+        html += `<tr class="season-summary-row" data-season="${season}" style="cursor: pointer;">`;
+        html += `<td><span class="expand-icon">▶</span></td>`;
+        html += `<td><strong>${season}</strong></td>`;
+        html += `<td>${totals.games || 0}</td>`;
+        
+        if (isQB) {
+            html += `<td>${totals.passing_yards || 0}</td>`;
+            html += `<td>${totals.passing_tds || 0}</td>`;
+            html += `<td>${totals.interceptions || 0}</td>`;
+            html += `<td>${totals.rushing_yards || 0}</td>`;
+            html += `<td>${totals.rushing_tds || 0}</td>`;
+        } else if (isRB) {
+            html += `<td>${totals.rushing_yards || 0}</td>`;
+            html += `<td>${totals.rushing_tds || 0}</td>`;
+            html += `<td>${totals.receptions || 0}</td>`;
+            html += `<td>${totals.receiving_yards || 0}</td>`;
+            html += `<td>${totals.receiving_tds || 0}</td>`;
+        } else if (isWRTE) {
+            html += `<td>${totals.receptions || 0}</td>`;
+            html += `<td>${totals.receiving_yards || 0}</td>`;
+            html += `<td>${totals.receiving_tds || 0}</td>`;
+            html += `<td>${totals.rushing_yards || 0}</td>`;
+            html += `<td>${totals.rushing_tds || 0}</td>`;
+        } else {
+            html += `<td>${totals.rushing_yards || 0}</td>`;
+            html += `<td>${totals.rushing_tds || 0}</td>`;
+            html += `<td>${totals.receptions || 0}</td>`;
+            html += `<td>${totals.receiving_yards || 0}</td>`;
+            html += `<td>${totals.receiving_tds || 0}</td>`;
+        }
+        
+        html += `<td><strong>${(totals.fantasy_points_ppr || 0).toFixed(1)}</strong></td>`;
+        html += '</tr>';
+        
+        // Week-by-week detail row (initially hidden)
+        html += `<tr class="season-detail-row season-detail-${season}" style="display: none;">`;
+        html += `<td colspan="100%">`;
+        html += `<div style="padding: 1rem; background: #f8f9fa;">`;
+        html += `<h4 style="margin-top: 0;">Week-by-Week Stats for ${season}</h4>`;
+        html += `<table class="stats-table" style="font-size: 0.85rem;">`;
+        html += `<thead><tr><th>Week</th><th>Opp</th>`;
+        
+        if (isQB) {
+            html += '<th>Cmp/Att</th><th>Pass Yds</th><th>Pass TD</th><th>INT</th><th>Rush Yds</th><th>Rush TD</th>';
+        } else if (isRB) {
+            html += '<th>Carries</th><th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
+        } else if (isWRTE) {
+            html += '<th>Tgt</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th><th>Rush Yds</th><th>Rush TD</th>';
+        } else {
+            html += '<th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
+        }
+        
+        html += '<th>Fant Pts</th></tr></thead><tbody>';
+        
+        // Sort by week
+        const sortedWeekStats = seasonStats.sort((a, b) => a.week - b.week);
+        
+        sortedWeekStats.forEach(stat => {
+            html += '<tr>';
+            html += `<td><strong>${stat.week}</strong></td>`;
+            html += `<td>${stat.opponent_team || '-'}</td>`;
+            
+            if (isQB) {
+                html += `<td>${stat.completions || 0}/${stat.attempts || 0}</td>`;
+                html += `<td>${stat.passing_yards || 0}</td>`;
+                html += `<td>${stat.passing_tds || 0}</td>`;
+                html += `<td>${stat.interceptions || 0}</td>`;
+                html += `<td>${stat.rushing_yards || 0}</td>`;
+                html += `<td>${stat.rushing_tds || 0}</td>`;
+            } else if (isRB) {
+                html += `<td>${stat.carries || 0}</td>`;
+                html += `<td>${stat.rushing_yards || 0}</td>`;
+                html += `<td>${stat.rushing_tds || 0}</td>`;
+                html += `<td>${stat.receptions || 0}</td>`;
+                html += `<td>${stat.receiving_yards || 0}</td>`;
+                html += `<td>${stat.receiving_tds || 0}</td>`;
+            } else if (isWRTE) {
+                html += `<td>${stat.targets || 0}</td>`;
+                html += `<td>${stat.receptions || 0}</td>`;
+                html += `<td>${stat.receiving_yards || 0}</td>`;
+                html += `<td>${stat.receiving_tds || 0}</td>`;
+                html += `<td>${stat.rushing_yards || 0}</td>`;
+                html += `<td>${stat.rushing_tds || 0}</td>`;
+            } else {
+                html += `<td>${stat.rushing_yards || 0}</td>`;
+                html += `<td>${stat.rushing_tds || 0}</td>`;
+                html += `<td>${stat.receptions || 0}</td>`;
+                html += `<td>${stat.receiving_yards || 0}</td>`;
+                html += `<td>${stat.receiving_tds || 0}</td>`;
+            }
+            
+            html += `<td><strong>${(stat.fantasy_points_ppr || 0).toFixed(1)}</strong></td>`;
+            html += '</tr>';
+        });
+        
+        html += '</tbody></table></div></td></tr>';
+    });
+    
+    html += '</tbody></table>';
+    
+    container.innerHTML = html;
+    
+    // Add click handlers to season rows
+    document.querySelectorAll('.season-summary-row').forEach(row => {
+        row.addEventListener('click', function() {
+            const season = this.getAttribute('data-season');
+            const detailRow = document.querySelector(`.season-detail-${season}`);
+            const icon = this.querySelector('.expand-icon');
+            
+            if (detailRow.style.display === 'none') {
+                detailRow.style.display = 'table-row';
+                icon.textContent = '▼';
+                this.style.background = '#e7f3ff';
+            } else {
+                detailRow.style.display = 'none';
+                icon.textContent = '▶';
+                this.style.background = '';
+            }
+        });
+    });
+}
+
+function showError(title, message) {
+    const errorHTML = `
+        <div class="error-message">
+            <h3>${title}</h3>
+            <p>${message || 'Please try again later.'}</p>
+        </div>
+    `;
+    document.getElementById('currentSeasonTab').innerHTML = errorHTML;
+    document.getElementById('careerStatsTab').innerHTML = errorHTML;
+}
+</script>
 {% endblock %}

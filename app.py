@@ -763,6 +763,78 @@ def api_seasons():
     return jsonify({'seasons': get_available_seasons()})
 
 
+@app.route('/api/player-stats/<player_name>')
+def api_player_stats(player_name):
+    """
+    API endpoint for player NFL stats
+    
+    Args:
+        player_name: Player name (from fantasy roster)
+        
+    Query params:
+        season: Optional season year to filter by
+    """
+    from scrapers.nfl_stats_fetcher import NFLStatsFetcher
+    
+    season = request.args.get('season', type=int)
+    
+    try:
+        fetcher = NFLStatsFetcher()
+        stats_data = fetcher.get_player_stats(player_name, season)
+        
+        if 'error' in stats_data:
+            return jsonify(stats_data), 404
+        
+        # Organize stats by season for easier display
+        weekly_stats = stats_data.get('weekly_stats', [])
+        
+        # Group by season
+        seasons_data = {}
+        for stat in weekly_stats:
+            season_year = stat['season']
+            if season_year not in seasons_data:
+                seasons_data[season_year] = []
+            seasons_data[season_year].append(stat)
+        
+        # Calculate season totals
+        season_totals = {}
+        for season_year, season_stats in seasons_data.items():
+            totals = {
+                'season': season_year,
+                'games': len(season_stats),
+                'passing_yards': sum(s['passing_yards'] or 0 for s in season_stats),
+                'passing_tds': sum(s['passing_tds'] or 0 for s in season_stats),
+                'interceptions': sum(s['interceptions'] or 0 for s in season_stats),
+                'rushing_yards': sum(s['rushing_yards'] or 0 for s in season_stats),
+                'rushing_tds': sum(s['rushing_tds'] or 0 for s in season_stats),
+                'receptions': sum(s['receptions'] or 0 for s in season_stats),
+                'receiving_yards': sum(s['receiving_yards'] or 0 for s in season_stats),
+                'receiving_tds': sum(s['receiving_tds'] or 0 for s in season_stats),
+                'fantasy_points': sum(s['fantasy_points'] or 0 for s in season_stats),
+                'fantasy_points_ppr': sum(s['fantasy_points_ppr'] or 0 for s in season_stats)
+            }
+            season_totals[season_year] = totals
+        
+        return jsonify({
+            'player_info': stats_data['player_info'],
+            'weekly_stats': weekly_stats,
+            'seasons_data': seasons_data,
+            'season_totals': season_totals,
+            'total_games': stats_data['total_games']
+        })
+    
+    except ImportError:
+        return jsonify({
+            'error': 'NFL stats module not available',
+            'message': 'Please run: pip install nflreadpy polars'
+        }), 503
+    except Exception as e:
+        return jsonify({
+            'error': 'Failed to fetch player stats',
+            'message': str(e)
+        }), 500
+
+
 @app.route('/screenshots/<filename>')
 def screenshot(filename):
     """Serve screenshot files"""
