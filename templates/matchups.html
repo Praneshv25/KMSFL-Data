@@ -13,36 +13,36 @@
         padding: 1rem;
         border-radius: 8px;
     }
-    
+
     .team-roster {
         background: white;
         padding: 1rem;
         border-radius: 4px;
     }
-    
+
     .roster-table {
         font-size: 0.85rem;
     }
-    
+
     .roster-table td {
         padding: 0.4rem 0.5rem;
     }
-    
+
     .starter-row {
         background: #e7f5e7;
     }
-    
+
     .bench-row {
         opacity: 0.7;
     }
-    
+
     .matchup-card {
         margin-bottom: 2rem;
         border: 2px solid #eee;
         border-radius: 8px;
         overflow: hidden;
     }
-    
+
     .matchup-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -51,22 +51,22 @@
         justify-content: space-between;
         align-items: center;
     }
-    
+
     .score-display {
         font-size: 2rem;
         font-weight: bold;
     }
-    
+
     .team-name {
         font-size: 1.2rem;
         font-weight: 600;
     }
-    
+
     .projected {
         font-size: 0.9rem;
         opacity: 0.8;
     }
-    
+
     /* Player link styling */
     .player-link {
         color: #667eea;
@@ -75,12 +75,12 @@
         font-weight: 500;
         transition: color 0.2s;
     }
-    
+
     .player-link:hover {
         color: #764ba2;
         text-decoration: underline;
     }
-    
+
     /* Modal styling */
     .modal-overlay {
         display: none;
@@ -94,13 +94,13 @@
         overflow-y: auto;
         padding: 20px;
     }
-    
+
     .modal-overlay.active {
         display: flex;
         align-items: center;
         justify-content: center;
     }
-    
+
     .modal-container {
         background: white;
         border-radius: 12px;
@@ -112,7 +112,7 @@
         flex-direction: column;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
-    
+
     .modal-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
@@ -121,13 +121,13 @@
         align-items: center;
         justify-content: space-between;
     }
-    
+
     .modal-player-info {
         display: flex;
         align-items: center;
         gap: 1rem;
     }
-    
+
     .modal-player-photo {
         width: 60px;
         height: 60px;
@@ -135,18 +135,18 @@
         background: white;
         object-fit: cover;
     }
-    
+
     .modal-player-details h2 {
         margin: 0;
         font-size: 1.5rem;
     }
-    
+
     .modal-player-meta {
         font-size: 0.9rem;
         opacity: 0.9;
         margin-top: 0.25rem;
     }
-    
+
     .modal-close {
         background: rgba(255, 255, 255, 0.2);
         border: none;
@@ -161,17 +161,17 @@
         justify-content: center;
         transition: background 0.2s;
     }
-    
+
     .modal-close:hover {
         background: rgba(255, 255, 255, 0.3);
     }
-    
+
     .modal-tabs {
         display: flex;
         background: #f8f9fa;
         border-bottom: 2px solid #dee2e6;
     }
-    
+
     .modal-tab {
         flex: 1;
         padding: 1rem;
@@ -183,37 +183,37 @@
         color: #6c757d;
         transition: all 0.2s;
     }
-    
+
     .modal-tab:hover {
         background: #e9ecef;
     }
-    
+
     .modal-tab.active {
         color: #667eea;
         background: white;
         border-bottom: 3px solid #667eea;
     }
-    
+
     .modal-body {
         padding: 1.5rem;
         overflow-y: auto;
         flex: 1;
     }
-    
+
     .modal-tab-content {
         display: none;
     }
-    
+
     .modal-tab-content.active {
         display: block;
     }
-    
+
     .stats-table {
         width: 100%;
         border-collapse: collapse;
         font-size: 0.9rem;
     }
-    
+
     .stats-table th {
         background: #f8f9fa;
         padding: 0.75rem 0.5rem;
@@ -224,24 +224,24 @@
         position: sticky;
         top: 0;
     }
-    
+
     .stats-table td {
         padding: 0.75rem 0.5rem;
         border-bottom: 1px solid #e9ecef;
     }
-    
+
     .stats-table tbody tr:hover {
         background: #f8f9fa;
     }
-    
+
     .stats-table tbody tr:nth-child(even) {
         background: #fafbfc;
     }
-    
+
     .stats-table tbody tr:nth-child(even):hover {
         background: #f1f3f5;
     }
-    
+
     .season-summary {
         background: #e7f5ff;
         padding: 1rem;
@@ -251,96 +251,101 @@
         justify-content: space-around;
         flex-wrap: wrap;
     }
-    
+
     .season-summary-item {
         text-align: center;
         padding: 0.5rem;
     }
-    
+
     .season-summary-label {
         font-size: 0.8rem;
         color: #6c757d;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
-    
+
     .season-summary-value {
         font-size: 1.5rem;
         font-weight: bold;
         color: #1971c2;
         margin-top: 0.25rem;
     }
-    
+
     .loading-spinner {
         text-align: center;
         padding: 3rem;
         color: #6c757d;
     }
-    
+
     .loading-spinner::after {
         content: "⏳";
         font-size: 3rem;
         display: block;
         animation: spin 2s linear infinite;
     }
-    
+
     @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
     }
-    
+
     .error-message {
         padding: 2rem;
         text-align: center;
         color: #dc3545;
     }
-    
+
     .no-data-message {
         padding: 2rem;
         text-align: center;
         color: #6c757d;
     }
-    
+
     /* Expandable season rows */
     .season-summary-row {
         transition: background-color 0.2s;
     }
-    
+
     .season-summary-row:hover {
         background-color: #f1f3f5;
     }
-    
+
     .expand-icon {
         display: inline-block;
         transition: transform 0.2s;
         font-size: 0.8rem;
         color: #667eea;
     }
-    
+
     .season-detail-row td {
         padding: 0 !important;
     }
-    
+
     .season-detail-row .stats-table {
         margin: 0;
         box-shadow: none;
     }
-    
+
     /* Responsive */
     @media (max-width: 768px) {
         .modal-container {
             max-height: 95vh;
         }
-        
+
         .stats-table {
             font-size: 0.8rem;
         }
-        
+
         .stats-table th,
         .stats-table td {
             padding: 0.5rem 0.25rem;
         }
-        
+
         .season-summary {
             flex-direction: column;
         }
@@ -351,112 +356,115 @@
 {% block content %}
 <div class="card">
     <h2>Weekly Matchups & Box Scores</h2>
-    
+
     <div class="filter-bar">
         <label for="week-select">Select Week:</label>
-        <select id="week-select" onchange="window.location.href='/matchups?season={{ selected_season }}&week=' + this.value">
+        <select id="week-select"
+            onchange="window.location.href='/matchups?season={{ selected_season }}&week=' + this.value">
             {% for week in available_weeks %}
-            <option value="{{ week }}" {% if week == selected_week %}selected{% endif %}>
+            <option value="{{ week }}" {% if week==selected_week %}selected{% endif %}>
                 Week {{ week }}
             </option>
             {% endfor %}
         </select>
     </div>
-    
+
     {% if matchups %}
-        {% for matchup in matchups %}
-        <div class="matchup-card">
-            <div class="matchup-header">
-                <div>
-                    <div class="team-name">{{ matchup.home_team or 'Home Team' }}</div>
-                    <div class="score-display">{{ "%.2f"|format(matchup.home_score or 0) }}</div>
-                    {% if matchup.home_projected %}
-                    <div class="projected">Proj: {{ "%.1f"|format(matchup.home_projected) }}</div>
-                    {% endif %}
-                </div>
-                
-                <div style="font-size: 1.5rem;">vs</div>
-                
-                <div style="text-align: right;">
-                    <div class="team-name">{{ matchup.away_team or 'Away Team' }}</div>
-                    <div class="score-display">{{ "%.2f"|format(matchup.away_score or 0) }}</div>
-                    {% if matchup.away_projected %}
-                    <div class="projected">Proj: {{ "%.1f"|format(matchup.away_projected) }}</div>
-                    {% endif %}
-                </div>
+    {% for matchup in matchups %}
+    <div class="matchup-card">
+        <div class="matchup-header">
+            <div>
+                <div class="team-name">{{ matchup.home_team or 'Home Team' }}</div>
+                <div class="score-display">{{ "%.2f"|format(matchup.home_score or 0) }}</div>
+                {% if matchup.home_projected %}
+                <div class="projected">Proj: {{ "%.1f"|format(matchup.home_projected) }}</div>
+                {% endif %}
             </div>
-            
-            {% if matchup.bracket_type %}
-            <div style="background: #fff3cd; padding: 0.5rem; text-align: center; font-weight: 600;">
-                {{ matchup.bracket_type }}
+
+            <div style="font-size: 1.5rem;">vs</div>
+
+            <div style="text-align: right;">
+                <div class="team-name">{{ matchup.away_team or 'Away Team' }}</div>
+                <div class="score-display">{{ "%.2f"|format(matchup.away_score or 0) }}</div>
+                {% if matchup.away_projected %}
+                <div class="projected">Proj: {{ "%.1f"|format(matchup.away_projected) }}</div>
+                {% endif %}
             </div>
-            {% endif %}
-            
-            {% if matchup.home_roster or matchup.away_roster %}
-            <div class="roster-container">
-                <div class="team-roster">
-                    <h3>{{ matchup.home_team }} Roster</h3>
-                    <table class="roster-table">
-                        <thead>
-                            <tr>
-                                <th>Player</th>
-                                <th>Pos</th>
-                                <th>Team</th>
-                                <th>Pts</th>
-                                <th>Proj</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for player in matchup.home_roster %}
-                            <tr class="{% if player.started %}starter-row{% else %}bench-row{% endif %}">
-                                <td>
-                                    <a href="#" class="player-link" data-player="{{ player.player_name or 'Unknown' }}" data-season="{{ season_year }}">
-                                        {{ player.player_name or 'Unknown' }}
-                                    </a>
-                                </td>
-                                <td><strong>{{ player.position or 'N/A' }}</strong></td>
-                                <td>{{ player.nfl_team or '' }}</td>
-                                <td><strong>{{ "%.1f"|format(player.points or 0) }}</strong></td>
-                                <td style="color: #888;">{{ "%.1f"|format(player.projected or 0) }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div class="team-roster">
-                    <h3>{{ matchup.away_team }} Roster</h3>
-                    <table class="roster-table">
-                        <thead>
-                            <tr>
-                                <th>Player</th>
-                                <th>Pos</th>
-                                <th>Team</th>
-                                <th>Pts</th>
-                                <th>Proj</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for player in matchup.away_roster %}
-                            <tr class="{% if player.started %}starter-row{% else %}bench-row{% endif %}">
-                                <td>
-                                    <a href="#" class="player-link" data-player="{{ player.player_name or 'Unknown' }}" data-season="{{ season_year }}">
-                                        {{ player.player_name or 'Unknown' }}
-                                    </a>
-                                </td>
-                                <td><strong>{{ player.position or 'N/A' }}</strong></td>
-                                <td>{{ player.nfl_team or '' }}</td>
-                                <td><strong>{{ "%.1f"|format(player.points or 0) }}</strong></td>
-                                <td style="color: #888;">{{ "%.1f"|format(player.projected or 0) }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            {% endif %}
         </div>
-        {% endfor %}
+
+        {% if matchup.bracket_type %}
+        <div style="background: #fff3cd; padding: 0.5rem; text-align: center; font-weight: 600;">
+            {{ matchup.bracket_type }}
+        </div>
+        {% endif %}
+
+        {% if matchup.home_roster or matchup.away_roster %}
+        <div class="roster-container">
+            <div class="team-roster">
+                <h3>{{ matchup.home_team }} Roster</h3>
+                <table class="roster-table">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Pos</th>
+                            <th>Team</th>
+                            <th>Pts</th>
+                            <th>Proj</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for player in matchup.home_roster %}
+                        <tr class="{% if player.started %}starter-row{% else %}bench-row{% endif %}">
+                            <td>
+                                <a href="#" class="player-link" data-player="{{ player.player_name or 'Unknown' }}"
+                                    data-position="{{ player.position or 'N/A' }}" data-season="{{ season_year }}">
+                                    {{ player.player_name or 'Unknown' }}
+                                </a>
+                            </td>
+                            <td><strong>{{ player.position or 'N/A' }}</strong></td>
+                            <td>{{ player.nfl_team or '' }}</td>
+                            <td><strong>{{ "%.1f"|format(player.points or 0) }}</strong></td>
+                            <td style="color: #888;">{{ "%.1f"|format(player.projected or 0) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="team-roster">
+                <h3>{{ matchup.away_team }} Roster</h3>
+                <table class="roster-table">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Pos</th>
+                            <th>Team</th>
+                            <th>Pts</th>
+                            <th>Proj</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for player in matchup.away_roster %}
+                        <tr class="{% if player.started %}starter-row{% else %}bench-row{% endif %}">
+                            <td>
+                                <a href="#" class="player-link" data-player="{{ player.player_name or 'Unknown' }}"
+                                    data-position="{{ player.position or 'N/A' }}" data-season="{{ season_year }}">
+                                    {{ player.player_name or 'Unknown' }}
+                                </a>
+                            </td>
+                            <td><strong>{{ player.position or 'N/A' }}</strong></td>
+                            <td>{{ player.nfl_team or '' }}</td>
+                            <td><strong>{{ "%.1f"|format(player.points or 0) }}</strong></td>
+                            <td style="color: #888;">{{ "%.1f"|format(player.projected or 0) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
     {% else %}
     <p>No matchup data available for this week.</p>
     {% endif %}
@@ -471,25 +479,26 @@
                 <div class="modal-player-details">
                     <h2 id="modalPlayerName">Player Name</h2>
                     <div class="modal-player-meta">
-                        <span id="modalPlayerPosition">Position</span> • 
+                        <span id="modalPlayerPosition">Position</span> •
                         <span id="modalPlayerTeam">Team</span>
                     </div>
                 </div>
             </div>
             <button class="modal-close" onclick="closePlayerModal()">&times;</button>
         </div>
-        
+
         <div class="modal-tabs">
-            <button id="currentSeasonTabButton" class="modal-tab active" onclick="switchTab('current')">Current Season</button>
+            <button id="currentSeasonTabButton" class="modal-tab active" onclick="switchTab('current')">Current
+                Season</button>
             <button class="modal-tab" onclick="switchTab('career')">Career Stats</button>
         </div>
-        
+
         <div class="modal-body">
             <!-- Current Season Tab -->
             <div id="currentSeasonTab" class="modal-tab-content active">
                 <div class="loading-spinner">Loading stats...</div>
             </div>
-            
+
             <!-- Career Stats Tab -->
             <div id="careerStatsTab" class="modal-tab-content">
                 <div class="loading-spinner">Loading career stats...</div>
@@ -499,406 +508,561 @@
 </div>
 
 <script>
-// Player stats modal functionality
-let currentPlayerData = null;
+    // Player stats modal functionality
+    let currentPlayerData = null;
 
-// Add click handlers to all player links
-document.addEventListener('DOMContentLoaded', function() {
-    const playerLinks = document.querySelectorAll('.player-link');
-    playerLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            e.preventDefault();
-            const playerName = this.getAttribute('data-player');
-            const season = this.getAttribute('data-season');
-            if (playerName && playerName !== 'Unknown') {
-                openPlayerModal(playerName, season);
+    // Add click handlers to all player links
+    document.addEventListener('DOMContentLoaded', function () {
+        const playerLinks = document.querySelectorAll('.player-link');
+        playerLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const playerName = this.getAttribute('data-player');
+                const season = this.getAttribute('data-season');
+                const position = this.getAttribute('data-position');
+                if (playerName && playerName !== 'Unknown') {
+                    openPlayerModal(playerName, season, position);
+                }
+            });
+        });
+
+        // Close modal on overlay click
+        document.getElementById('playerStatsModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closePlayerModal();
+            }
+        });
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closePlayerModal();
             }
         });
     });
-    
-    // Close modal on overlay click
-    document.getElementById('playerStatsModal').addEventListener('click', function(e) {
-        if (e.target === this) {
-            closePlayerModal();
+
+    function openPlayerModal(playerName, season, position) {
+        const modal = document.getElementById('playerStatsModal');
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Store the season for use in tab display
+        currentPlayerData = { season: parseInt(season) };
+
+        // Update tab label to show the specific season
+        const tabButton = document.getElementById('currentSeasonTabButton');
+        if (tabButton && season) {
+            tabButton.textContent = `${season} Season`;
         }
-    });
-    
-    // Close modal on escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closePlayerModal();
+
+        // Reset tabs
+        switchTab('current');
+
+        // Show loading state
+        document.getElementById('currentSeasonTab').innerHTML = '<div class="loading-spinner">Loading stats...</div>';
+        document.getElementById('careerStatsTab').innerHTML = '<div class="loading-spinner">Loading career stats...</div>';
+
+        // Fetch player stats with season and position context
+        fetchPlayerStats(playerName, season, position);
+    }
+
+    function closePlayerModal() {
+        const modal = document.getElementById('playerStatsModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = 'auto';
+        currentPlayerData = null;
+    }
+
+    function switchTab(tabName) {
+        // Update tab buttons
+        const tabs = document.querySelectorAll('.modal-tab');
+        tabs.forEach(tab => tab.classList.remove('active'));
+
+        // Update tab content
+        const contents = document.querySelectorAll('.modal-tab-content');
+        contents.forEach(content => content.classList.remove('active'));
+
+        if (tabName === 'current') {
+            tabs[0].classList.add('active');
+            document.getElementById('currentSeasonTab').classList.add('active');
+        } else {
+            tabs[1].classList.add('active');
+            document.getElementById('careerStatsTab').classList.add('active');
         }
-    });
-});
-
-function openPlayerModal(playerName, season) {
-    const modal = document.getElementById('playerStatsModal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    // Store the season for use in tab display
-    currentPlayerData = { season: parseInt(season) };
-    
-    // Update tab label to show the specific season
-    const tabButton = document.getElementById('currentSeasonTabButton');
-    if (tabButton && season) {
-        tabButton.textContent = `${season} Season`;
     }
-    
-    // Reset tabs
-    switchTab('current');
-    
-    // Show loading state
-    document.getElementById('currentSeasonTab').innerHTML = '<div class="loading-spinner">Loading stats...</div>';
-    document.getElementById('careerStatsTab').innerHTML = '<div class="loading-spinner">Loading career stats...</div>';
-    
-    // Fetch player stats with season context
-    fetchPlayerStats(playerName, season);
-}
 
-function closePlayerModal() {
-    const modal = document.getElementById('playerStatsModal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-    currentPlayerData = null;
-}
+    function fetchPlayerStats(playerName, season, position) {
+        // Check if this is a D/ST player using position
+        const isDST = position === 'D/ST' || position === 'DEF' || position === 'DST';
 
-function switchTab(tabName) {
-    // Update tab buttons
-    const tabs = document.querySelectorAll('.modal-tab');
-    tabs.forEach(tab => tab.classList.remove('active'));
-    
-    // Update tab content
-    const contents = document.querySelectorAll('.modal-tab-content');
-    contents.forEach(content => content.classList.remove('active'));
-    
-    if (tabName === 'current') {
-        tabs[0].classList.add('active');
-        document.getElementById('currentSeasonTab').classList.add('active');
-    } else {
-        tabs[1].classList.add('active');
-        document.getElementById('careerStatsTab').classList.add('active');
-    }
-}
-
-function fetchPlayerStats(playerName, season) {
-    // Include season parameter in API call if provided
-    const apiUrl = `/api/player-stats/${encodeURIComponent(playerName)}`;
-    
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                showError(data.error, data.message || '');
-                return;
+        let apiUrl;
+        if (isDST) {
+            // Use the DST-specific endpoint (avoids URL routing issues with slashes)
+            // Extract just the team name/code (remove D/ST suffix if present)
+            const teamName = playerName.replace(/\s*(D\/ST|DEF|DST)\s*/gi, '').trim();
+            apiUrl = `/api/dst-stats/${encodeURIComponent(teamName)}`;
+            if (season) {
+                apiUrl += `?season=${season}`;
             }
-            
-            // Store season context with the data
-            data.viewingSeason = parseInt(season);
-            currentPlayerData = data;
-            
-            displayPlayerInfo(data.player_info);
-            displayCurrentSeasonStats(data);
-            displayCareerStats(data);
-        })
-        .catch(error => {
-            console.error('Error fetching player stats:', error);
-            showError('Failed to load player stats', error.message);
+        } else {
+            // Regular player endpoint
+            apiUrl = `/api/player-stats/${encodeURIComponent(playerName)}`;
+        }
+
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showError(data.error, data.message || '');
+                    return;
+                }
+
+                // Store season context with the data
+                data.viewingSeason = parseInt(season);
+                currentPlayerData = data;
+
+                displayPlayerInfo(data.player_info);
+
+                // Handle D/ST stats differently
+                if (data.is_dst) {
+                    displayDSTCurrentSeasonStats(data);
+                    displayDSTCareerStats(data);
+                } else {
+                    displayCurrentSeasonStats(data);
+                    displayCareerStats(data);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching player stats:', error);
+                showError('Failed to load player stats', error.message);
+            });
+    }
+
+    function displayPlayerInfo(playerInfo) {
+        document.getElementById('modalPlayerName').textContent = playerInfo.player_display_name || playerInfo.player_name || 'Unknown Player';
+        document.getElementById('modalPlayerPosition').textContent = playerInfo.position || 'N/A';
+        document.getElementById('modalPlayerTeam').textContent = playerInfo.team || 'FA';
+
+        // Show headshot if available
+        const photo = document.getElementById('modalPlayerPhoto');
+        if (playerInfo.headshot_url && playerInfo.headshot_url !== 'nan' && playerInfo.headshot_url !== '') {
+            photo.src = playerInfo.headshot_url;
+            photo.style.display = 'block';
+            photo.onerror = function () {
+                this.style.display = 'none';
+            };
+        } else {
+            photo.style.display = 'none';
+        }
+    }
+
+    function displayCurrentSeasonStats(data) {
+        const container = document.getElementById('currentSeasonTab');
+        // Use the viewing season from matchup context, not calendar year
+        const viewingSeason = data.viewingSeason || new Date().getFullYear();
+        const currentSeasonStats = data.seasons_data[viewingSeason] || [];
+
+        if (currentSeasonStats.length === 0) {
+            container.innerHTML = `<div class="no-data-message">No stats available for ${viewingSeason} season</div>`;
+            return;
+        }
+
+        // Get season totals
+        const totals = data.season_totals[viewingSeason] || {};
+
+        // Determine position type for relevant stats
+        const position = data.player_info.position;
+        const isQB = position === 'QB';
+        const isRB = position === 'RB';
+        const isWRTE = position === 'WR' || position === 'TE';
+        const isK = position === 'K';
+
+        // Build season summary
+        let summaryHTML = '<div class="season-summary">';
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Games</div><div class="season-summary-value">${totals.games || 0}</div></div>`;
+
+        if (isQB) {
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Pass Yds</div><div class="season-summary-value">${totals.passing_yards || 0}</div></div>`;
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Pass TDs</div><div class="season-summary-value">${totals.passing_tds || 0}</div></div>`;
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">INTs</div><div class="season-summary-value">${totals.interceptions || 0}</div></div>`;
+        } else if (isRB) {
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rush Yds</div><div class="season-summary-value">${totals.rushing_yards || 0}</div></div>`;
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rush TDs</div><div class="season-summary-value">${totals.rushing_tds || 0}</div></div>`;
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec</div><div class="season-summary-value">${totals.receptions || 0}</div></div>`;
+        } else if (isWRTE) {
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec</div><div class="season-summary-value">${totals.receptions || 0}</div></div>`;
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec Yds</div><div class="season-summary-value">${totals.receiving_yards || 0}</div></div>`;
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec TDs</div><div class="season-summary-value">${totals.receiving_tds || 0}</div></div>`;
+        } else if (isK) {
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">FG Made/Att</div><div class="season-summary-value">${totals.fg_made || 0}/${totals.fg_att || 0}</div></div>`;
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">FG %</div><div class="season-summary-value">${((totals.fg_pct || 0) * 100).toFixed(1)}%</div></div>`;
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">XP Made/Att</div><div class="season-summary-value">${totals.pat_made || 0}/${totals.pat_att || 0}</div></div>`;
+            summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Longest FG</div><div class="season-summary-value">${totals.fg_long || 0}</div></div>`;
+        }
+
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Fantasy Pts (PPR)</div><div class="season-summary-value">${(totals.fantasy_points_ppr || 0).toFixed(1)}</div></div>`;
+        summaryHTML += '</div>';
+
+        // Build stats table
+        let tableHTML = '<table class="stats-table"><thead><tr>';
+        tableHTML += '<th>Week</th><th>Opp</th>';
+
+        if (isQB) {
+            tableHTML += '<th>Cmp/Att</th><th>Pass Yds</th><th>Pass TD</th><th>INT</th><th>Rush Yds</th><th>Rush TD</th>';
+        } else if (isRB) {
+            tableHTML += '<th>Carries</th><th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
+        } else if (isWRTE) {
+            tableHTML += '<th>Tgt</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th><th>Rush Yds</th><th>Rush TD</th>';
+        } else if (isK) {
+            tableHTML += '<th>0-19</th><th>20-29</th><th>30-39</th><th>40-49</th><th>50+</th><th>XP</th><th>Long</th>';
+        }
+
+        tableHTML += '<th>Fant Pts</th></tr></thead><tbody>';
+
+        // Sort by week
+        currentSeasonStats.sort((a, b) => a.week - b.week);
+
+        currentSeasonStats.forEach(stat => {
+            tableHTML += '<tr>';
+            tableHTML += `<td><strong>${stat.week}</strong></td>`;
+            tableHTML += `<td>${stat.opponent_team || '-'}</td>`;
+
+            if (isQB) {
+                tableHTML += `<td>${stat.completions || 0}/${stat.attempts || 0}</td>`;
+                tableHTML += `<td>${stat.passing_yards || 0}</td>`;
+                tableHTML += `<td>${stat.passing_tds || 0}</td>`;
+                tableHTML += `<td>${stat.interceptions || 0}</td>`;
+                tableHTML += `<td>${stat.rushing_yards || 0}</td>`;
+                tableHTML += `<td>${stat.rushing_tds || 0}</td>`;
+            } else if (isRB) {
+                tableHTML += `<td>${stat.carries || 0}</td>`;
+                tableHTML += `<td>${stat.rushing_yards || 0}</td>`;
+                tableHTML += `<td>${stat.rushing_tds || 0}</td>`;
+                tableHTML += `<td>${stat.receptions || 0}</td>`;
+                tableHTML += `<td>${stat.receiving_yards || 0}</td>`;
+                tableHTML += `<td>${stat.receiving_tds || 0}</td>`;
+            } else if (isWRTE) {
+                tableHTML += `<td>${stat.targets || 0}</td>`;
+                tableHTML += `<td>${stat.receptions || 0}</td>`;
+                tableHTML += `<td>${stat.receiving_yards || 0}</td>`;
+                tableHTML += `<td>${stat.receiving_tds || 0}</td>`;
+                tableHTML += `<td>${stat.rushing_yards || 0}</td>`;
+                tableHTML += `<td>${stat.rushing_tds || 0}</td>`;
+            } else if (isK) {
+                // Field goals by distance range
+                const fg_0_19 = `${stat.fg_made_0_19 || 0}/${(stat.fg_made_0_19 || 0) + (stat.fg_missed_0_19 || 0)}`;
+                const fg_20_29 = `${stat.fg_made_20_29 || 0}/${(stat.fg_made_20_29 || 0) + (stat.fg_missed_20_29 || 0)}`;
+                const fg_30_39 = `${stat.fg_made_30_39 || 0}/${(stat.fg_made_30_39 || 0) + (stat.fg_missed_30_39 || 0)}`;
+                const fg_40_49 = `${stat.fg_made_40_49 || 0}/${(stat.fg_made_40_49 || 0) + (stat.fg_missed_40_49 || 0)}`;
+                const fg_50_plus = `${(stat.fg_made_50_59 || 0) + (stat.fg_made_60_ || 0)}/${(stat.fg_made_50_59 || 0) + (stat.fg_made_60_ || 0) + (stat.fg_missed_50_59 || 0) + (stat.fg_missed_60_ || 0)}`;
+
+                tableHTML += `<td>${fg_0_19}</td>`;
+                tableHTML += `<td>${fg_20_29}</td>`;
+                tableHTML += `<td>${fg_30_39}</td>`;
+                tableHTML += `<td>${fg_40_49}</td>`;
+                tableHTML += `<td>${fg_50_plus}</td>`;
+                tableHTML += `<td>${stat.pat_made || 0}/${stat.pat_att || 0}</td>`;
+                tableHTML += `<td>${stat.fg_long || 0}</td>`;
+            }
+
+            tableHTML += `<td><strong>${(stat.fantasy_points_ppr || 0).toFixed(1)}</strong></td>`;
+            tableHTML += '</tr>';
         });
-}
 
-function displayPlayerInfo(playerInfo) {
-    document.getElementById('modalPlayerName').textContent = playerInfo.player_display_name || playerInfo.player_name || 'Unknown Player';
-    document.getElementById('modalPlayerPosition').textContent = playerInfo.position || 'N/A';
-    document.getElementById('modalPlayerTeam').textContent = playerInfo.team || 'FA';
-    
-    // Show headshot if available
-    const photo = document.getElementById('modalPlayerPhoto');
-    if (playerInfo.headshot_url && playerInfo.headshot_url !== 'nan' && playerInfo.headshot_url !== '') {
-        photo.src = playerInfo.headshot_url;
-        photo.style.display = 'block';
-        photo.onerror = function() {
-            this.style.display = 'none';
-        };
-    } else {
-        photo.style.display = 'none';
-    }
-}
+        tableHTML += '</tbody></table>';
 
-function displayCurrentSeasonStats(data) {
-    const container = document.getElementById('currentSeasonTab');
-    // Use the viewing season from matchup context, not calendar year
-    const viewingSeason = data.viewingSeason || new Date().getFullYear();
-    const currentSeasonStats = data.seasons_data[viewingSeason] || [];
-    
-    if (currentSeasonStats.length === 0) {
-        container.innerHTML = `<div class="no-data-message">No stats available for ${viewingSeason} season</div>`;
-        return;
+        container.innerHTML = summaryHTML + tableHTML;
     }
-    
-    // Get season totals
-    const totals = data.season_totals[viewingSeason] || {};
-    
-    // Determine position type for relevant stats
-    const position = data.player_info.position;
-    const isQB = position === 'QB';
-    const isRB = position === 'RB';
-    const isWRTE = position === 'WR' || position === 'TE';
-    
-    // Build season summary
-    let summaryHTML = '<div class="season-summary">';
-    summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Games</div><div class="season-summary-value">${totals.games || 0}</div></div>`;
-    
-    if (isQB) {
-        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Pass Yds</div><div class="season-summary-value">${totals.passing_yards || 0}</div></div>`;
-        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Pass TDs</div><div class="season-summary-value">${totals.passing_tds || 0}</div></div>`;
-        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">INTs</div><div class="season-summary-value">${totals.interceptions || 0}</div></div>`;
-    } else if (isRB) {
-        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rush Yds</div><div class="season-summary-value">${totals.rushing_yards || 0}</div></div>`;
-        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rush TDs</div><div class="season-summary-value">${totals.rushing_tds || 0}</div></div>`;
-        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec</div><div class="season-summary-value">${totals.receptions || 0}</div></div>`;
-    } else if (isWRTE) {
-        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec</div><div class="season-summary-value">${totals.receptions || 0}</div></div>`;
-        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec Yds</div><div class="season-summary-value">${totals.receiving_yards || 0}</div></div>`;
-        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Rec TDs</div><div class="season-summary-value">${totals.receiving_tds || 0}</div></div>`;
-    }
-    
-    summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Fantasy Pts (PPR)</div><div class="season-summary-value">${(totals.fantasy_points_ppr || 0).toFixed(1)}</div></div>`;
-    summaryHTML += '</div>';
-    
-    // Build stats table
-    let tableHTML = '<table class="stats-table"><thead><tr>';
-    tableHTML += '<th>Week</th><th>Opp</th>';
-    
-    if (isQB) {
-        tableHTML += '<th>Cmp/Att</th><th>Pass Yds</th><th>Pass TD</th><th>INT</th><th>Rush Yds</th><th>Rush TD</th>';
-    } else if (isRB) {
-        tableHTML += '<th>Carries</th><th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
-    } else if (isWRTE) {
-        tableHTML += '<th>Tgt</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th><th>Rush Yds</th><th>Rush TD</th>';
-    } else {
-        tableHTML += '<th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
-    }
-    
-    tableHTML += '<th>Fant Pts</th></tr></thead><tbody>';
-    
-    // Sort by week
-    currentSeasonStats.sort((a, b) => a.week - b.week);
-    
-    currentSeasonStats.forEach(stat => {
-        tableHTML += '<tr>';
-        tableHTML += `<td><strong>${stat.week}</strong></td>`;
-        tableHTML += `<td>${stat.opponent_team || '-'}</td>`;
-        
-        if (isQB) {
-            tableHTML += `<td>${stat.completions || 0}/${stat.attempts || 0}</td>`;
-            tableHTML += `<td>${stat.passing_yards || 0}</td>`;
-            tableHTML += `<td>${stat.passing_tds || 0}</td>`;
-            tableHTML += `<td>${stat.interceptions || 0}</td>`;
-            tableHTML += `<td>${stat.rushing_yards || 0}</td>`;
-            tableHTML += `<td>${stat.rushing_tds || 0}</td>`;
-        } else if (isRB) {
-            tableHTML += `<td>${stat.carries || 0}</td>`;
-            tableHTML += `<td>${stat.rushing_yards || 0}</td>`;
-            tableHTML += `<td>${stat.rushing_tds || 0}</td>`;
-            tableHTML += `<td>${stat.receptions || 0}</td>`;
-            tableHTML += `<td>${stat.receiving_yards || 0}</td>`;
-            tableHTML += `<td>${stat.receiving_tds || 0}</td>`;
-        } else if (isWRTE) {
-            tableHTML += `<td>${stat.targets || 0}</td>`;
-            tableHTML += `<td>${stat.receptions || 0}</td>`;
-            tableHTML += `<td>${stat.receiving_yards || 0}</td>`;
-            tableHTML += `<td>${stat.receiving_tds || 0}</td>`;
-            tableHTML += `<td>${stat.rushing_yards || 0}</td>`;
-            tableHTML += `<td>${stat.rushing_tds || 0}</td>`;
-        } else {
-            tableHTML += `<td>${stat.rushing_yards || 0}</td>`;
-            tableHTML += `<td>${stat.rushing_tds || 0}</td>`;
-            tableHTML += `<td>${stat.receptions || 0}</td>`;
-            tableHTML += `<td>${stat.receiving_yards || 0}</td>`;
-            tableHTML += `<td>${stat.receiving_tds || 0}</td>`;
+
+    function displayCareerStats(data) {
+        const container = document.getElementById('careerStatsTab');
+        const allStats = data.weekly_stats || [];
+
+        if (allStats.length === 0) {
+            container.innerHTML = '<div class="no-data-message">No career stats available</div>';
+            return;
         }
-        
-        tableHTML += `<td><strong>${(stat.fantasy_points_ppr || 0).toFixed(1)}</strong></td>`;
-        tableHTML += '</tr>';
-    });
-    
-    tableHTML += '</tbody></table>';
-    
-    container.innerHTML = summaryHTML + tableHTML;
-}
 
-function displayCareerStats(data) {
-    const container = document.getElementById('careerStatsTab');
-    const allStats = data.weekly_stats || [];
-    
-    if (allStats.length === 0) {
-        container.innerHTML = '<div class="no-data-message">No career stats available</div>';
-        return;
-    }
-    
-    // Group by season and show season summaries
-    const seasonTotals = data.season_totals || {};
-    const seasonsData = data.seasons_data || {};
-    const seasons = Object.keys(seasonTotals).sort((a, b) => b - a);
-    
-    const position = data.player_info.position;
-    const isQB = position === 'QB';
-    const isRB = position === 'RB';
-    const isWRTE = position === 'WR' || position === 'TE';
-    
-    let html = '<div style="margin-bottom: 1rem;"><h3>Career Summary by Season (Click to expand)</h3></div>';
-    html += '<table class="stats-table career-stats-table"><thead><tr>';
-    html += '<th style="width: 40px;"></th><th>Season</th><th>Games</th>';
-    
-    if (isQB) {
-        html += '<th>Pass Yds</th><th>Pass TD</th><th>INT</th><th>Rush Yds</th><th>Rush TD</th>';
-    } else if (isRB) {
-        html += '<th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
-    } else if (isWRTE) {
-        html += '<th>Rec</th><th>Rec Yds</th><th>Rec TD</th><th>Rush Yds</th><th>Rush TD</th>';
-    } else {
-        html += '<th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
-    }
-    
-    html += '<th>Fant Pts (PPR)</th></tr></thead><tbody>';
-    
-    seasons.forEach(season => {
-        const totals = seasonTotals[season];
-        const seasonStats = seasonsData[season] || [];
-        
-        // Season summary row (clickable)
-        html += `<tr class="season-summary-row" data-season="${season}" style="cursor: pointer;">`;
-        html += `<td><span class="expand-icon">▶</span></td>`;
-        html += `<td><strong>${season}</strong></td>`;
-        html += `<td>${totals.games || 0}</td>`;
-        
+        // Group by season and show season summaries
+        const seasonTotals = data.season_totals || {};
+        const seasonsData = data.seasons_data || {};
+        const seasons = Object.keys(seasonTotals).sort((a, b) => b - a);
+
+        const position = data.player_info.position;
+        const isQB = position === 'QB';
+        const isRB = position === 'RB';
+        const isWRTE = position === 'WR' || position === 'TE';
+        const isK = position === 'K';
+
+        let html = '<div style="margin-bottom: 1rem;"><h3>Career Summary by Season (Click to expand)</h3></div>';
+        html += '<table class="stats-table career-stats-table"><thead><tr>';
+        html += '<th style="width: 40px;"></th><th>Season</th><th>Games</th>';
+
         if (isQB) {
-            html += `<td>${totals.passing_yards || 0}</td>`;
-            html += `<td>${totals.passing_tds || 0}</td>`;
-            html += `<td>${totals.interceptions || 0}</td>`;
-            html += `<td>${totals.rushing_yards || 0}</td>`;
-            html += `<td>${totals.rushing_tds || 0}</td>`;
+            html += '<th>Pass Yds</th><th>Pass TD</th><th>INT</th><th>Rush Yds</th><th>Rush TD</th>';
         } else if (isRB) {
-            html += `<td>${totals.rushing_yards || 0}</td>`;
-            html += `<td>${totals.rushing_tds || 0}</td>`;
-            html += `<td>${totals.receptions || 0}</td>`;
-            html += `<td>${totals.receiving_yards || 0}</td>`;
-            html += `<td>${totals.receiving_tds || 0}</td>`;
+            html += '<th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
         } else if (isWRTE) {
-            html += `<td>${totals.receptions || 0}</td>`;
-            html += `<td>${totals.receiving_yards || 0}</td>`;
-            html += `<td>${totals.receiving_tds || 0}</td>`;
-            html += `<td>${totals.rushing_yards || 0}</td>`;
-            html += `<td>${totals.rushing_tds || 0}</td>`;
-        } else {
-            html += `<td>${totals.rushing_yards || 0}</td>`;
-            html += `<td>${totals.rushing_tds || 0}</td>`;
-            html += `<td>${totals.receptions || 0}</td>`;
-            html += `<td>${totals.receiving_yards || 0}</td>`;
-            html += `<td>${totals.receiving_tds || 0}</td>`;
-        }
-        
-        html += `<td><strong>${(totals.fantasy_points_ppr || 0).toFixed(1)}</strong></td>`;
-        html += '</tr>';
-        
-        // Week-by-week detail row (initially hidden)
-        html += `<tr class="season-detail-row season-detail-${season}" style="display: none;">`;
-        html += `<td colspan="100%">`;
-        html += `<div style="padding: 1rem; background: #f8f9fa;">`;
-        html += `<h4 style="margin-top: 0;">Week-by-Week Stats for ${season}</h4>`;
-        html += `<table class="stats-table" style="font-size: 0.85rem;">`;
-        html += `<thead><tr><th>Week</th><th>Opp</th>`;
-        
-        if (isQB) {
-            html += '<th>Cmp/Att</th><th>Pass Yds</th><th>Pass TD</th><th>INT</th><th>Rush Yds</th><th>Rush TD</th>';
-        } else if (isRB) {
-            html += '<th>Carries</th><th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
-        } else if (isWRTE) {
-            html += '<th>Tgt</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th><th>Rush Yds</th><th>Rush TD</th>';
+            html += '<th>Rec</th><th>Rec Yds</th><th>Rec TD</th><th>Rush Yds</th><th>Rush TD</th>';
+        } else if (isK) {
+            html += '<th>FG Made/Att</th><th>FG %</th><th>XP Made/Att</th><th>Long</th>';
         } else {
             html += '<th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
         }
-        
-        html += '<th>Fant Pts</th></tr></thead><tbody>';
-        
-        // Sort by week
-        const sortedWeekStats = seasonStats.sort((a, b) => a.week - b.week);
-        
-        sortedWeekStats.forEach(stat => {
-            html += '<tr>';
-            html += `<td><strong>${stat.week}</strong></td>`;
-            html += `<td>${stat.opponent_team || '-'}</td>`;
-            
+
+        html += '<th>Fant Pts (PPR)</th></tr></thead><tbody>';
+
+        seasons.forEach(season => {
+            const totals = seasonTotals[season];
+            const seasonStats = seasonsData[season] || [];
+
+            // Season summary row (clickable)
+            html += `<tr class="season-summary-row" data-season="${season}" style="cursor: pointer;">`;
+            html += `<td><span class="expand-icon">▶</span></td>`;
+            html += `<td><strong>${season}</strong></td>`;
+            html += `<td>${totals.games || 0}</td>`;
+
             if (isQB) {
-                html += `<td>${stat.completions || 0}/${stat.attempts || 0}</td>`;
-                html += `<td>${stat.passing_yards || 0}</td>`;
-                html += `<td>${stat.passing_tds || 0}</td>`;
-                html += `<td>${stat.interceptions || 0}</td>`;
-                html += `<td>${stat.rushing_yards || 0}</td>`;
-                html += `<td>${stat.rushing_tds || 0}</td>`;
+                html += `<td>${totals.passing_yards || 0}</td>`;
+                html += `<td>${totals.passing_tds || 0}</td>`;
+                html += `<td>${totals.interceptions || 0}</td>`;
+                html += `<td>${totals.rushing_yards || 0}</td>`;
+                html += `<td>${totals.rushing_tds || 0}</td>`;
             } else if (isRB) {
-                html += `<td>${stat.carries || 0}</td>`;
-                html += `<td>${stat.rushing_yards || 0}</td>`;
-                html += `<td>${stat.rushing_tds || 0}</td>`;
-                html += `<td>${stat.receptions || 0}</td>`;
-                html += `<td>${stat.receiving_yards || 0}</td>`;
-                html += `<td>${stat.receiving_tds || 0}</td>`;
+                html += `<td>${totals.rushing_yards || 0}</td>`;
+                html += `<td>${totals.rushing_tds || 0}</td>`;
+                html += `<td>${totals.receptions || 0}</td>`;
+                html += `<td>${totals.receiving_yards || 0}</td>`;
+                html += `<td>${totals.receiving_tds || 0}</td>`;
             } else if (isWRTE) {
-                html += `<td>${stat.targets || 0}</td>`;
-                html += `<td>${stat.receptions || 0}</td>`;
-                html += `<td>${stat.receiving_yards || 0}</td>`;
-                html += `<td>${stat.receiving_tds || 0}</td>`;
-                html += `<td>${stat.rushing_yards || 0}</td>`;
-                html += `<td>${stat.rushing_tds || 0}</td>`;
+                html += `<td>${totals.receptions || 0}</td>`;
+                html += `<td>${totals.receiving_yards || 0}</td>`;
+                html += `<td>${totals.receiving_tds || 0}</td>`;
+                html += `<td>${totals.rushing_yards || 0}</td>`;
+                html += `<td>${totals.rushing_tds || 0}</td>`;
+            } else if (isK) {
+                html += `<td>${totals.fg_made || 0}/${totals.fg_att || 0}</td>`;
+                html += `<td>${((totals.fg_pct || 0) * 100).toFixed(1)}%</td>`;
+                html += `<td>${totals.pat_made || 0}/${totals.pat_att || 0}</td>`;
+                html += `<td>${totals.fg_long || 0}</td>`;
             } else {
-                html += `<td>${stat.rushing_yards || 0}</td>`;
-                html += `<td>${stat.rushing_tds || 0}</td>`;
-                html += `<td>${stat.receptions || 0}</td>`;
-                html += `<td>${stat.receiving_yards || 0}</td>`;
-                html += `<td>${stat.receiving_tds || 0}</td>`;
+                html += `<td>${totals.rushing_yards || 0}</td>`;
+                html += `<td>${totals.rushing_tds || 0}</td>`;
+                html += `<td>${totals.receptions || 0}</td>`;
+                html += `<td>${totals.receiving_yards || 0}</td>`;
+                html += `<td>${totals.receiving_tds || 0}</td>`;
             }
-            
-            html += `<td><strong>${(stat.fantasy_points_ppr || 0).toFixed(1)}</strong></td>`;
+
+            html += `<td><strong>${(totals.fantasy_points_ppr || 0).toFixed(1)}</strong></td>`;
+            html += '</tr>';
+
+            // Week-by-week detail row (initially hidden)
+            html += `<tr class="season-detail-row season-detail-${season}" style="display: none;">`;
+            html += `<td colspan="100%">`;
+            html += `<div style="padding: 1rem; background: #f8f9fa;">`;
+            html += `<h4 style="margin-top: 0;">Week-by-Week Stats for ${season}</h4>`;
+            html += `<table class="stats-table" style="font-size: 0.85rem;">`;
+            html += `<thead><tr><th>Week</th><th>Opp</th>`;
+
+            if (isQB) {
+                html += '<th>Cmp/Att</th><th>Pass Yds</th><th>Pass TD</th><th>INT</th><th>Rush Yds</th><th>Rush TD</th>';
+            } else if (isRB) {
+                html += '<th>Carries</th><th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
+            } else if (isWRTE) {
+                html += '<th>Tgt</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th><th>Rush Yds</th><th>Rush TD</th>';
+            } else if (isK) {
+                html += '<th>0-19</th><th>20-29</th><th>30-39</th><th>40-49</th><th>50+</th><th>XP</th><th>Long</th>';
+            } else {
+                html += '<th>Rush Yds</th><th>Rush TD</th><th>Rec</th><th>Rec Yds</th><th>Rec TD</th>';
+            }
+
+            html += '<th>Fant Pts</th></tr></thead><tbody>';
+
+            // Sort by week
+            const sortedWeekStats = seasonStats.sort((a, b) => a.week - b.week);
+
+            sortedWeekStats.forEach(stat => {
+                html += '<tr>';
+                html += `<td><strong>${stat.week}</strong></td>`;
+                html += `<td>${stat.opponent_team || '-'}</td>`;
+
+                if (isQB) {
+                    html += `<td>${stat.completions || 0}/${stat.attempts || 0}</td>`;
+                    html += `<td>${stat.passing_yards || 0}</td>`;
+                    html += `<td>${stat.passing_tds || 0}</td>`;
+                    html += `<td>${stat.interceptions || 0}</td>`;
+                    html += `<td>${stat.rushing_yards || 0}</td>`;
+                    html += `<td>${stat.rushing_tds || 0}</td>`;
+                } else if (isRB) {
+                    html += `<td>${stat.carries || 0}</td>`;
+                    html += `<td>${stat.rushing_yards || 0}</td>`;
+                    html += `<td>${stat.rushing_tds || 0}</td>`;
+                    html += `<td>${stat.receptions || 0}</td>`;
+                    html += `<td>${stat.receiving_yards || 0}</td>`;
+                    html += `<td>${stat.receiving_tds || 0}</td>`;
+                } else if (isWRTE) {
+                    html += `<td>${stat.targets || 0}</td>`;
+                    html += `<td>${stat.receptions || 0}</td>`;
+                    html += `<td>${stat.receiving_yards || 0}</td>`;
+                    html += `<td>${stat.receiving_tds || 0}</td>`;
+                    html += `<td>${stat.rushing_yards || 0}</td>`;
+                    html += `<td>${stat.rushing_tds || 0}</td>`;
+                } else if (isK) {
+                    // Field goals by distance range
+                    const fg_0_19 = `${stat.fg_made_0_19 || 0}/${(stat.fg_made_0_19 || 0) + (stat.fg_missed_0_19 || 0)}`;
+                    const fg_20_29 = `${stat.fg_made_20_29 || 0}/${(stat.fg_made_20_29 || 0) + (stat.fg_missed_20_29 || 0)}`;
+                    const fg_30_39 = `${stat.fg_made_30_39 || 0}/${(stat.fg_made_30_39 || 0) + (stat.fg_missed_30_39 || 0)}`;
+                    const fg_40_49 = `${stat.fg_made_40_49 || 0}/${(stat.fg_made_40_49 || 0) + (stat.fg_missed_40_49 || 0)}`;
+                    const fg_50_plus = `${(stat.fg_made_50_59 || 0) + (stat.fg_made_60_ || 0)}/${(stat.fg_made_50_59 || 0) + (stat.fg_made_60_ || 0) + (stat.fg_missed_50_59 || 0) + (stat.fg_missed_60_ || 0)}`;
+
+                    html += `<td>${fg_0_19}</td>`;
+                    html += `<td>${fg_20_29}</td>`;
+                    html += `<td>${fg_30_39}</td>`;
+                    html += `<td>${fg_40_49}</td>`;
+                    html += `<td>${fg_50_plus}</td>`;
+                    html += `<td>${stat.pat_made || 0}/${stat.pat_att || 0}</td>`;
+                    html += `<td>${stat.fg_long || 0}</td>`;
+                } else {
+                    html += `<td>${stat.rushing_yards || 0}</td>`;
+                    html += `<td>${stat.rushing_tds || 0}</td>`;
+                    html += `<td>${stat.receptions || 0}</td>`;
+                    html += `<td>${stat.receiving_yards || 0}</td>`;
+                    html += `<td>${stat.receiving_tds || 0}</td>`;
+                }
+
+                html += `<td><strong>${(stat.fantasy_points_ppr || 0).toFixed(1)}</strong></td>`;
+                html += '</tr>';
+            });
+
+            html += '</tbody></table></div></td></tr>';
+        });
+
+        html += '</tbody></table>';
+
+        container.innerHTML = html;
+
+        // Add click handlers to season rows
+        document.querySelectorAll('.season-summary-row').forEach(row => {
+            row.addEventListener('click', function () {
+                const season = this.getAttribute('data-season');
+                const detailRow = document.querySelector(`.season-detail-${season}`);
+                const icon = this.querySelector('.expand-icon');
+
+                if (detailRow.style.display === 'none') {
+                    detailRow.style.display = 'table-row';
+                    icon.textContent = '▼';
+                    this.style.background = '#e7f3ff';
+                } else {
+                    detailRow.style.display = 'none';
+                    icon.textContent = '▶';
+                    this.style.background = '';
+                }
+            });
+        });
+    }
+
+    // D/ST-specific display functions
+    function displayDSTCurrentSeasonStats(data) {
+        const container = document.getElementById('currentSeasonTab');
+        const viewingSeason = data.viewingSeason || new Date().getFullYear();
+        const currentSeasonStats = data.seasons_data[viewingSeason] || [];
+
+        if (currentSeasonStats.length === 0) {
+            container.innerHTML = `<div class="no-data-message">No stats available for ${viewingSeason} season</div>`;
+            return;
+        }
+
+        // Get season totals
+        const totals = data.season_totals[viewingSeason] || {};
+
+        // Build D/ST season summary
+        let summaryHTML = '<div class="season-summary">';
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Games</div><div class="season-summary-value">${totals.games || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Sacks</div><div class="season-summary-value">${totals.def_sacks || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">INTs</div><div class="season-summary-value">${totals.def_interceptions || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Fumbles Rec</div><div class="season-summary-value">${totals.def_fumbles_recovered || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Def TDs</div><div class="season-summary-value">${totals.def_touchdowns || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">ST TDs</div><div class="season-summary-value">${totals.special_teams_tds || 0}</div></div>`;
+        summaryHTML += `<div class="season-summary-item"><div class="season-summary-label">Pts Allowed</div><div class="season-summary-value">${totals.points_allowed || 0}</div></div>`;
+        summaryHTML += '</div>';
+
+        // Build D/ST stats table
+        let tableHTML = '<table class="stats-table"><thead><tr>';
+        tableHTML += '<th>Week</th><th>Opp</th><th>Sacks</th><th>INTs</th><th>Fum Rec</th><th>Fum Forced</th><th>Def TDs</th><th>ST TDs</th><th>Safeties</th><th>Pts Allowed</th><th>Fant Pts</th>';
+        tableHTML += '</tr></thead><tbody>';
+
+        // Sort by week
+        currentSeasonStats.sort((a, b) => a.week - b.week);
+
+        currentSeasonStats.forEach(stat => {
+            tableHTML += '<tr>';
+            tableHTML += `<td><strong>${stat.week}</strong></td>`;
+            tableHTML += `<td>${stat.opponent_team || '-'}</td>`;
+            tableHTML += `<td>${stat.def_sacks || 0}</td>`;
+            tableHTML += `<td>${stat.def_interceptions || 0}</td>`;
+            tableHTML += `<td>${stat.def_fumbles_recovered || 0}</td>`;
+            tableHTML += `<td>${stat.def_fumbles_forced || 0}</td>`;
+            tableHTML += `<td>${stat.def_touchdowns || 0}</td>`;
+            tableHTML += `<td>${stat.special_teams_tds || 0}</td>`;
+            tableHTML += `<td>${stat.def_safeties || 0}</td>`;
+            tableHTML += `<td>${stat.points_allowed || 0}</td>`;
+            tableHTML += `<td><strong>${(stat.fantasy_points_ppr || 0).toFixed(1)}</strong></td>`;
+            tableHTML += '</tr>';
+        });
+
+        tableHTML += '</tbody></table>';
+
+        container.innerHTML = summaryHTML + tableHTML;
+    }
+
+    function displayDSTCareerStats(data) {
+        const container = document.getElementById('careerStatsTab');
+        const allStats = data.weekly_stats || [];
+
+        if (allStats.length === 0) {
+            container.innerHTML = '<div class="no-data-message">No career stats available</div>';
+            return;
+        }
+
+        // Group by season
+        const seasonTotals = data.season_totals || {};
+        const seasons = Object.keys(seasonTotals).sort((a, b) => b - a);
+
+        let html = '<div style="margin-bottom: 1rem;"><h3>Career Summary by Season</h3></div>';
+        html += '<table class="stats-table"><thead><tr>';
+        html += '<th>Season</th><th>Games</th><th>Sacks</th><th>INTs</th><th>Fum Rec</th><th>Def TDs</th><th>ST TDs</th><th>Safeties</th><th>Pts Allowed</th><th>Fant Pts (PPR)</th>';
+        html += '</tr></thead><tbody>';
+
+        seasons.forEach(season => {
+            const totals = seasonTotals[season];
+            html += '<tr>';
+            html += `<td><strong>${season}</strong></td>`;
+            html += `<td>${totals.games || 0}</td>`;
+            html += `<td>${totals.def_sacks || 0}</td>`;
+            html += `<td>${totals.def_interceptions || 0}</td>`;
+            html += `<td>${totals.def_fumbles_recovered || 0}</td>`;
+            html += `<td>${totals.def_touchdowns || 0}</td>`;
+            html += `<td>${totals.special_teams_tds || 0}</td>`;
+            html += `<td>${totals.def_safeties || 0}</td>`;
+            html += `<td>${totals.points_allowed || 0} (${(totals.avg_points_allowed || 0).toFixed(1)} avg)</td>`;
+            html += `<td><strong>${(totals.fantasy_points_ppr || 0).toFixed(1)}</strong></td>`;
             html += '</tr>';
         });
-        
-        html += '</tbody></table></div></td></tr>';
-    });
-    
-    html += '</tbody></table>';
-    
-    container.innerHTML = html;
-    
-    // Add click handlers to season rows
-    document.querySelectorAll('.season-summary-row').forEach(row => {
-        row.addEventListener('click', function() {
-            const season = this.getAttribute('data-season');
-            const detailRow = document.querySelector(`.season-detail-${season}`);
-            const icon = this.querySelector('.expand-icon');
-            
-            if (detailRow.style.display === 'none') {
-                detailRow.style.display = 'table-row';
-                icon.textContent = '▼';
-                this.style.background = '#e7f3ff';
-            } else {
-                detailRow.style.display = 'none';
-                icon.textContent = '▶';
-                this.style.background = '';
-            }
-        });
-    });
-}
 
-function showError(title, message) {
-    const errorHTML = `
+        html += '</tbody></table>';
+
+        container.innerHTML = html;
+    }
+
+    function showError(title, message) {
+        const errorHTML = `
         <div class="error-message">
             <h3>${title}</h3>
             <p>${message || 'Please try again later.'}</p>
         </div>
     `;
-    document.getElementById('currentSeasonTab').innerHTML = errorHTML;
-    document.getElementById('careerStatsTab').innerHTML = errorHTML;
-}
+        document.getElementById('currentSeasonTab').innerHTML = errorHTML;
+        document.getElementById('careerStatsTab').innerHTML = errorHTML;
+    }
 </script>
 {% endblock %}

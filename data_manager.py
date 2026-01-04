@@ -213,6 +213,50 @@ class DataManager:
             )
         """)
         
+        # NFL team defense/special teams stats table
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS nfl_team_defense_stats (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                team TEXT,
+                team_abbr TEXT,
+                season INTEGER,
+                week INTEGER,
+                season_type TEXT,
+                opponent_team TEXT,
+                
+                -- Defensive Stats
+                def_sacks INTEGER DEFAULT 0,
+                def_sack_yards REAL DEFAULT 0.0,
+                def_qb_hits INTEGER DEFAULT 0,
+                def_tackles_for_loss INTEGER DEFAULT 0,
+                def_tackles_for_loss_yards REAL DEFAULT 0.0,
+                def_interceptions INTEGER DEFAULT 0,
+                def_interception_yards REAL DEFAULT 0.0,
+                def_passes_defended INTEGER DEFAULT 0,
+                def_fumbles_forced INTEGER DEFAULT 0,
+                def_fumbles_recovered INTEGER DEFAULT 0,
+                def_fumble_recovery_yards REAL DEFAULT 0.0,
+                
+                -- Scoring Stats
+                def_touchdowns INTEGER DEFAULT 0,
+                def_safeties INTEGER DEFAULT 0,
+                special_teams_tds INTEGER DEFAULT 0,
+                
+                -- Points Allowed (for fantasy scoring)
+                points_allowed INTEGER DEFAULT 0,
+                
+                -- Additional Stats
+                def_penalties INTEGER DEFAULT 0,
+                def_penalty_yards INTEGER DEFAULT 0,
+                
+                -- Fantasy Points
+                fantasy_points REAL DEFAULT 0.0,
+                fantasy_points_ppr REAL DEFAULT 0.0,
+                
+                UNIQUE(team, season, week, season_type)
+            )
+        """)
+        
         # Create indexes for faster queries
         cursor.execute("""
             CREATE INDEX IF NOT EXISTS idx_nfl_weekly_stats_player 
@@ -227,6 +271,16 @@ class DataManager:
         cursor.execute("""
             CREATE INDEX IF NOT EXISTS idx_nfl_player_mapping_fantasy_name 
             ON nfl_player_mapping(fantasy_player_name)
+        """)
+        
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_nfl_team_defense_team 
+            ON nfl_team_defense_stats(team, season, week)
+        """)
+        
+        cursor.execute("""
+            CREATE INDEX IF NOT EXISTS idx_nfl_team_defense_abbr 
+            ON nfl_team_defense_stats(team_abbr, season, week)
         """)
         
         conn.commit()

@@ -763,23 +763,230 @@ def api_seasons():
     return jsonify({'seasons': get_available_seasons()})
 
 
-@app.route('/api/player-stats/<player_name>')
-def api_player_stats(player_name):
+@app.route('/api/dst-stats/<team_identifier>')
+def api_dst_stats(team_identifier):
     """
-    API endpoint for player NFL stats
+    API endpoint specifically for D/ST stats (avoids URL routing issues)
     
     Args:
-        player_name: Player name (from fantasy roster)
+        team_identifier: Team code (JAX, CIN, etc.) or team name
         
     Query params:
         season: Optional season year to filter by
     """
-    from scrapers.nfl_stats_fetcher import NFLStatsFetcher
+    from scrapers.nfl_stats_fetcher import NFLStatsFetcher, TEAM_ABBR_TO_NAME
+    import sqlite3
     
     season = request.args.get('season', type=int)
     
     try:
         fetcher = NFLStatsFetcher()
+        
+        # Extract team code
+        team_code = fetcher.extract_team_code(team_identifier)
+        
+        if not team_code:
+            return jsonify({
+                'error': 'D/ST team not found',
+                'message': f'Could not identify team from: {team_identifier}'
+            }), 404
+        
+        # Fetch D/ST stats from database
+        conn = sqlite3.connect(config.DB_FILE)
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # Get weekly D/ST stats
+        if season:
+            cursor.execute("""
+                SELECT * FROM nfl_team_defense_stats
+                WHERE team_abbr = ? AND season = ? AND season_type = 'REG'
+                ORDER BY week
+            """, (team_code, season))
+        else:
+            cursor.execute("""
+                SELECT * FROM nfl_team_defense_stats
+                WHERE team_abbr = ? AND season_type = 'REG'
+                ORDER BY season DESC, week
+            """, (team_code,))
+        
+        weekly_stats = [dict(row) for row in cursor.fetchall()]
+        conn.close()
+        
+        if not weekly_stats:
+            return jsonify({
+                'error': 'No D/ST stats found',
+                'message': f'No stats available for {TEAM_ABBR_TO_NAME.get(team_code, team_code)} defense'
+            }), 404
+        
+        # Group by season
+        seasons_data = {}
+        for stat in weekly_stats:
+            season_year = stat['season']
+            if season_year not in seasons_data:
+                seasons_data[season_year] = []
+            seasons_data[season_year].append(stat)
+        
+        # Calculate season totals
+        season_totals = {}
+        for season_year, season_stats in seasons_data.items():
+            totals = {
+                'season': season_year,
+                'games': len(season_stats),
+                'def_sacks': sum(s['def_sacks'] or 0 for s in season_stats),
+                'def_interceptions': sum(s['def_interceptions'] or 0 for s in season_stats),
+                'def_fumbles_recovered': sum(s['def_fumbles_recovered'] or 0 for s in season_stats),
+                'def_fumbles_forced': sum(s['def_fumbles_forced'] or 0 for s in season_stats),
+                'def_touchdowns': sum(s['def_touchdowns'] or 0 for s in season_stats),
+                'special_teams_tds': sum(s['special_teams_tds'] or 0 for s in season_stats),
+                'def_safeties': sum(s['def_safeties'] or 0 for s in season_stats),
+                'points_allowed': sum(s['points_allowed'] or 0 for s in season_stats),
+                'avg_points_allowed': sum(s['points_allowed'] or 0 for s in season_stats) / len(season_stats) if season_stats else 0,
+                'fantasy_points': sum(s['fantasy_points'] or 0 for s in season_stats),
+                'fantasy_points_ppr': sum(s['fantasy_points_ppr'] or 0 for s in season_stats)
+            }
+            season_totals[season_year] = totals
+        
+        # Get team info
+        player_info = {
+            'player_id': f'DST_{team_code}',
+            'player_name': TEAM_ABBR_TO_NAME.get(team_code, team_code),
+            'player_display_name': f'{TEAM_ABBR_TO_NAME.get(team_code, team_code)} D/ST',
+            'position': 'DST',
+            'team': team_code
+        }
+        
+        return jsonify({
+            'player_info': player_info,
+            'weekly_stats': weekly_stats,
+            'seasons_data': seasons_data,
+            'season_totals': season_totals,
+            'total_games': len(weekly_stats),
+            'is_dst': True
+        })
+    
+    except ImportError:
+        return jsonify({
+            'error': 'NFL stats module not available',
+            'message': 'Please run: pip install nflreadpy polars'
+        }), 503
+    except Exception as e:
+        return jsonify({
+            'error': 'Failed to fetch D/ST stats',
+            'message': str(e)
+        }), 500
+
+
+
+@app.route('/api/player-stats/<player_name>')
+def api_player_stats(player_name):
+    """
+    API endpoint for player NFL stats (including D/ST)
+    
+    Args:
+        player_name: Player name or D/ST team name (from fantasy roster)
+        
+    Query params:
+        season: Optional season year to filter by
+    """
+    from scrapers.nfl_stats_fetcher import NFLStatsFetcher
+    import sqlite3
+    
+    season = request.args.get('season', type=int)
+    
+    try:
+        fetcher = NFLStatsFetcher()
+        
+        # Check if this is a D/ST query
+        is_dst = any(keyword in player_name.upper() for keyword in ['D/ST', 'DEF', 'DST', 'DEFENSE'])
+        
+        if is_dst:
+            # Extract team code from D/ST name
+            team_code = fetcher.extract_team_code(player_name)
+            
+            if not team_code:
+                return jsonify({
+                    'error': 'D/ST team not found',
+                    'message': f'Could not identify team from: {player_name}'
+                }), 404
+            
+            # Fetch D/ST stats from database
+            conn = sqlite3.connect(config.DB_FILE)
+            conn.row_factory = sqlite3.Row
+            cursor = conn.cursor()
+            
+            # Get weekly D/ST stats
+            if season:
+                cursor.execute("""
+                    SELECT * FROM nfl_team_defense_stats
+                    WHERE team_abbr = ? AND season = ? AND season_type = 'REG'
+                    ORDER BY week
+                """, (team_code, season))
+            else:
+                cursor.execute("""
+                    SELECT * FROM nfl_team_defense_stats
+                    WHERE team_abbr = ? AND season_type = 'REG'
+                    ORDER BY season DESC, week
+                """, (team_code,))
+            
+            weekly_stats = [dict(row) for row in cursor.fetchall()]
+            conn.close()
+            
+            if not weekly_stats:
+                from scrapers.nfl_stats_fetcher import TEAM_ABBR_TO_NAME
+                return jsonify({
+                    'error': 'No D/ST stats found',
+                    'message': f'No stats available for {TEAM_ABBR_TO_NAME.get(team_code, team_code)} defense'
+                }), 404
+            
+            # Group by season
+            seasons_data = {}
+            for stat in weekly_stats:
+                season_year = stat['season']
+                if season_year not in seasons_data:
+                    seasons_data[season_year] = []
+                seasons_data[season_year].append(stat)
+            
+            # Calculate season totals
+            season_totals = {}
+            for season_year, season_stats in seasons_data.items():
+                totals = {
+                    'season': season_year,
+                    'games': len(season_stats),
+                    'def_sacks': sum(s['def_sacks'] or 0 for s in season_stats),
+                    'def_interceptions': sum(s['def_interceptions'] or 0 for s in season_stats),
+                    'def_fumbles_recovered': sum(s['def_fumbles_recovered'] or 0 for s in season_stats),
+                    'def_fumbles_forced': sum(s['def_fumbles_forced'] or 0 for s in season_stats),
+                    'def_touchdowns': sum(s['def_touchdowns'] or 0 for s in season_stats),
+                    'special_teams_tds': sum(s['special_teams_tds'] or 0 for s in season_stats),
+                    'def_safeties': sum(s['def_safeties'] or 0 for s in season_stats),
+                    'points_allowed': sum(s['points_allowed'] or 0 for s in season_stats),
+                    'avg_points_allowed': sum(s['points_allowed'] or 0 for s in season_stats) / len(season_stats) if season_stats else 0,
+                    'fantasy_points': sum(s['fantasy_points'] or 0 for s in season_stats),
+                    'fantasy_points_ppr': sum(s['fantasy_points_ppr'] or 0 for s in season_stats)
+                }
+                season_totals[season_year] = totals
+            
+            # Get team info
+            from scrapers.nfl_stats_fetcher import TEAM_ABBR_TO_NAME
+            player_info = {
+                'player_id': f'DST_{team_code}',
+                'player_name': TEAM_ABBR_TO_NAME.get(team_code, team_code),
+                'player_display_name': f'{TEAM_ABBR_TO_NAME.get(team_code, team_code)} D/ST',
+                'position': 'DST',
+                'team': team_code
+            }
+            
+            return jsonify({
+                'player_info': player_info,
+                'weekly_stats': weekly_stats,
+                'seasons_data': seasons_data,
+                'season_totals': season_totals,
+                'total_games': len(weekly_stats),
+                'is_dst': True
+            })
+        
+        # Regular player stats
         stats_data = fetcher.get_player_stats(player_name, season)
         
         if 'error' in stats_data:
@@ -810,6 +1017,14 @@ def api_player_stats(player_name):
                 'receptions': sum(s['receptions'] or 0 for s in season_stats),
                 'receiving_yards': sum(s['receiving_yards'] or 0 for s in season_stats),
                 'receiving_tds': sum(s['receiving_tds'] or 0 for s in season_stats),
+                # Kicker stats
+                'fg_made': sum(s.get('fg_made') or 0 for s in season_stats),
+                'fg_att': sum(s.get('fg_att') or 0 for s in season_stats),
+                'fg_pct': sum(s.get('fg_made') or 0 for s in season_stats) / sum(s.get('fg_att') or 0 for s in season_stats) if sum(s.get('fg_att') or 0 for s in season_stats) > 0 else 0,
+                'fg_long': max((s.get('fg_long') or 0 for s in season_stats), default=0),
+                'pat_made': sum(s.get('pat_made') or 0 for s in season_stats),
+                'pat_att': sum(s.get('pat_att') or 0 for s in season_stats),
+                'pat_pct': sum(s.get('pat_made') or 0 for s in season_stats) / sum(s.get('pat_att') or 0 for s in season_stats) if sum(s.get('pat_att') or 0 for s in season_stats) > 0 else 0,
                 'fantasy_points': sum(s['fantasy_points'] or 0 for s in season_stats),
                 'fantasy_points_ppr': sum(s['fantasy_points_ppr'] or 0 for s in season_stats)
             }
@@ -820,7 +1035,8 @@ def api_player_stats(player_name):
             'weekly_stats': weekly_stats,
             'seasons_data': seasons_data,
             'season_totals': season_totals,
-            'total_games': stats_data['total_games']
+            'total_games': stats_data['total_games'],
+            'is_dst': False
         })
     
     except ImportError:

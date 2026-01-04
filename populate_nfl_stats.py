@@ -14,6 +14,12 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import config
 from scrapers.nfl_stats_fetcher import NFLStatsFetcher
 
+try:
+    import nflreadpy as nfl
+except ImportError:
+    print("⚠ nflreadpy not installed. Run: pip install nflreadpy polars")
+    nfl = None
+
 
 def get_fantasy_player_names():
     """
@@ -125,6 +131,85 @@ def check_existing_data(db_path):
     }
 
 
+def migrate_database_for_kickers(db_path):
+    """
+    Add kicker stat columns to existing nfl_weekly_stats table
+    
+    Args:
+        db_path: Path to database
+    """
+    if not os.path.exists(db_path):
+        print("⚠  Database does not exist, skipping migration")
+        return
+    
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    
+    # Check if table exists
+    cursor.execute("""
+        SELECT name FROM sqlite_master 
+        WHERE type='table' AND name='nfl_weekly_stats'
+    """)
+    
+    if not cursor.fetchone():
+        print("✓ nfl_weekly_stats table doesn't exist yet, no migration needed")
+        conn.close()
+        return
+    
+    print("\n🔄 Migrating database schema for kicker stats...")
+    
+    # List of kicker columns to add
+    kicker_columns = [
+        ('fg_made', 'INTEGER DEFAULT 0'),
+        ('fg_att', 'INTEGER DEFAULT 0'),
+        ('fg_missed', 'INTEGER DEFAULT 0'),
+        ('fg_blocked', 'INTEGER DEFAULT 0'),
+        ('fg_long', 'INTEGER DEFAULT 0'),
+        ('fg_pct', 'REAL DEFAULT 0.0'),
+        ('fg_made_0_19', 'INTEGER DEFAULT 0'),
+        ('fg_made_20_29', 'INTEGER DEFAULT 0'),
+        ('fg_made_30_39', 'INTEGER DEFAULT 0'),
+        ('fg_made_40_49', 'INTEGER DEFAULT 0'),
+        ('fg_made_50_59', 'INTEGER DEFAULT 0'),
+        ('fg_made_60_', 'INTEGER DEFAULT 0'),
+        ('fg_missed_0_19', 'INTEGER DEFAULT 0'),
+        ('fg_missed_20_29', 'INTEGER DEFAULT 0'),
+        ('fg_missed_30_39', 'INTEGER DEFAULT 0'),
+        ('fg_missed_40_49', 'INTEGER DEFAULT 0'),
+        ('fg_missed_50_59', 'INTEGER DEFAULT 0'),
+        ('fg_missed_60_', 'INTEGER DEFAULT 0'),
+        ('pat_made', 'INTEGER DEFAULT 0'),
+        ('pat_att', 'INTEGER DEFAULT 0'),
+        ('pat_missed', 'INTEGER DEFAULT 0'),
+        ('pat_blocked', 'INTEGER DEFAULT 0'),
+        ('pat_pct', 'REAL DEFAULT 0.0'),
+        ('gwfg_att', 'INTEGER DEFAULT 0'),
+        ('gwfg_made', 'INTEGER DEFAULT 0'),
+    ]
+    
+    # Check which columns already exist
+    cursor.execute("PRAGMA table_info(nfl_weekly_stats)")
+    existing_columns = {row[1] for row in cursor.fetchall()}
+    
+    columns_added = 0
+    for col_name, col_type in kicker_columns:
+        if col_name not in existing_columns:
+            try:
+                cursor.execute(f"ALTER TABLE nfl_weekly_stats ADD COLUMN {col_name} {col_type}")
+                columns_added += 1
+                print(f"  ✓ Added column: {col_name}")
+            except Exception as e:
+                print(f"  ⚠ Error adding column {col_name}: {e}")
+    
+    conn.commit()
+    conn.close()
+    
+    if columns_added > 0:
+        print(f"\n✓ Migration complete: Added {columns_added} kicker stat columns")
+    else:
+        print("\n✓ All kicker columns already exist, no migration needed")
+
+
 def main():
     """
     Main function to populate NFL stats
@@ -132,6 +217,9 @@ def main():
     print("\n" + "="*60)
     print("NFL STATS DATABASE POPULATION")
     print("="*60 + "\n")
+    
+    # Run database migration for kicker stats
+    migrate_database_for_kickers(config.DB_FILE)
     
     # Check existing data
     print("📊 Checking existing data...")
@@ -311,6 +399,48 @@ def main():
         print("✗ Failed to fetch NFL stats")
         return
     
+    # Fetch team defense/special teams stats
+    print(f"\n🛡️  Fetching team defense/special teams stats...")
+    team_defense_stats = None
+    
+    for season in successful_seasons:
+        try:
+            print(f"   Attempting to fetch team defense for {season}...")
+            season_defense = fetcher.fetch_team_defense_stats([season])
+            if season_defense is not None and len(season_defense) > 0:
+                if team_defense_stats is None:
+                    team_defense_stats = season_defense
+                else:
+                    import polars as pl
+                    team_defense_stats = pl.concat([team_defense_stats, season_defense], how="vertical")
+        except Exception as e:
+            print(f"   ⚠ Could not fetch team defense for {season}: {e}")
+    
+    if team_defense_stats is not None and len(team_defense_stats) > 0:
+        print(f"✓ Fetched {len(team_defense_stats)} team defense records")
+    else:
+        print("⚠ No team defense stats fetched (this is OK if data not available)")
+    
+    # Fetch schedules for points allowed calculation
+    print(f"\n📅 Fetching game schedules for points allowed calculation...")
+    schedules = None
+    
+    for season in successful_seasons:
+        try:
+            print(f"   Attempting to fetch schedule for {season}...")
+            season_schedule = nfl.load_schedules(seasons=[season])
+            if season_schedule is not None and len(season_schedule) > 0:
+                if schedules is None:
+                    schedules = season_schedule
+                else:
+                    import polars as pl
+                    schedules = pl.concat([schedules, season_schedule], how="vertical")
+        except Exception as e:
+            print(f"   ⚠ Could not fetch schedule for {season}: {e}")
+    
+    if schedules is not None and len(schedules) > 0:
+        print(f"✓ Fetched {len(schedules)} game records for points allowed calculation")
+    
     # Store in database
     print(f"\n💾 Storing stats in database...")
     stored_count = fetcher.store_weekly_stats(weekly_stats)
@@ -319,23 +449,55 @@ def main():
         print("✗ Failed to store stats")
         return
     
-    # Get fantasy player names
+    # Store team defense stats with schedule data for points allowed
+    dst_stored_count = 0
+    if team_defense_stats is not None and len(team_defense_stats) > 0:
+        print(f"\n💾 Storing team defense stats in database...")
+        dst_stored_count = fetcher.store_team_defense_stats(team_defense_stats, schedules)
+    
+    # Get fantasy player names and D/ST names
     print(f"\n📝 Creating player name mappings...")
     player_names = get_fantasy_player_names()
     
+    # Extract D/ST names from rosters
+    dst_names = []
+    if os.path.exists(config.DB_FILE):
+        try:
+            conn = sqlite3.connect(config.DB_FILE)
+            cursor = conn.cursor()
+            cursor.execute("""
+                SELECT DISTINCT player_name FROM matchup_rosters 
+                WHERE position IN ('D/ST', 'DEF', 'DST')
+            """)
+            for row in cursor.fetchall():
+                if row[0]:
+                    dst_names.append(row[0])
+            conn.close()
+            print(f"✓ Found {len(dst_names)} D/ST teams in rosters")
+        except Exception as e:
+            print(f"⚠ Could not extract D/ST names: {e}")
+    
     if player_names:
         mapping_count = fetcher.create_player_mappings(player_names, weekly_stats)
-        print(f"✓ Created {mapping_count} mappings")
+        print(f"✓ Created {mapping_count} player mappings")
+    
+    # Create D/ST mappings
+    dst_mapping_count = 0
+    if dst_names and team_defense_stats is not None:
+        dst_mapping_count = fetcher.create_dst_mappings(dst_names, team_defense_stats)
+        print(f"✓ Created {dst_mapping_count} D/ST mappings")
     
     # Summary
     print("\n" + "="*60)
     print("SUMMARY")
     print("="*60)
-    print(f"✓ NFL Stats Records: {stored_count}")
+    print(f"✓ NFL Player Stats Records: {stored_count}")
+    print(f"✓ NFL Team Defense Records: {dst_stored_count}")
     print(f"✓ Player Mappings: {mapping_count if player_names else 0}")
+    print(f"✓ D/ST Mappings: {dst_mapping_count}")
     print(f"✓ Seasons: {seasons_to_fetch}")
     print(f"✓ Database: {config.DB_FILE}")
-    print("\n✓ NFL stats population complete!")
+    print("\n✓ NFL stats population complete (including D/ST)!")
     print("="*60 + "\n")
 
 
