@@ -38,7 +38,8 @@ Copy `.env.example` to `.env` and set:
 ### 3. Run Dashboard
 
 ```bash
-python app.py
+cd legacy-dashboard
+python3 app.py
 # Visit http://127.0.0.1:5001
 ```
 
@@ -46,38 +47,53 @@ python app.py
 
 ```
 .
-├── app.py                    # Flask web dashboard
-├── config.py                 # Configuration settings
-├── data_manager.py           # Database utilities
-├── populate_database.py      # Populate DB from JSON files
-├── requirements.txt          # Python dependencies
+├── legacy-dashboard/         # Original Flask dashboard (for testing)
+│   ├── app.py               # Flask web application
+│   ├── config.py            # Configuration
+│   ├── templates/           # HTML templates
+│   └── README.md
 │
-├── scrapers/                 # All data scraping tools
-│   ├── espn/                 # ESPN scraper (AI-powered)
+├── backend/                  # NEW - Production API (to be built)
+│   └── README.md
+│
+├── frontend/                 # NEW - Modern frontend (to be built)
+│   └── README.md
+│
+├── scrapers/                 # Shared scraping tools
+│   ├── espn/                # ESPN scraper (AI-powered)
 │   │   ├── historical_scraper.py
 │   │   ├── espn_scraper.py
 │   │   ├── gemini_client.py
 │   │   ├── auth_manager.py
 │   │   └── data_extraction.py
 │   │
-│   └── sleeper/              # Sleeper API scraper
-│       ├── sleeper_scraper.py
-│       ├── sleeper_client.py
-│       ├── run_sleeper_scrape.py
-│       ├── fetch_sleeper_projections.py
-│       └── enhance_sleeper_data.py
+│   ├── sleeper/             # Sleeper API scraper
+│   │   ├── sleeper_scraper.py
+│   │   ├── sleeper_client.py
+│   │   ├── run_sleeper_scrape.py
+│   │   ├── fetch_sleeper_projections.py
+│   │   └── enhance_sleeper_data.py
+│   │
+│   └── nfl_stats_fetcher.py # NFL player stats
 │
-├── templates/                # Flask HTML templates
-│   ├── base.html
-│   ├── index.html
-│   ├── matchups.html
-│   ├── draft.html
-│   └── transactions.html
+├── scripts/                  # Utility scripts
+│   ├── populate_database.py # Database population
+│   ├── populate_nfl_stats.py # NFL stats population
+│   └── data_manager.py      # Data management
 │
-└── data/                     # Generated data (gitignored)
-    ├── espn_fantasy.db       # SQLite database
-    ├── espn_league_*.json    # ESPN historical data
-    └── sleeper_*.json        # Sleeper data
+├── data/                     # Generated data (gitignored)
+│   ├── espn_fantasy.db      # SQLite database
+│   ├── espn_league_*.json   # ESPN historical data
+│   └── sleeper_*.json       # Sleeper data
+│
+├── docs/                     # Documentation
+│   ├── DEPLOYMENT.md
+│   ├── PROJECT_SUMMARY.md
+│   ├── QUICKSTART.md
+│   └── NFL_PLAYER_STATS_README.md
+│
+├── requirements.txt          # Python dependencies
+└── .env                      # Environment variables
 ```
 
 ## Usage
@@ -123,13 +139,14 @@ python app.py
 
 ```bash
 # Populate database from JSON files
-python populate_database.py
+python3 scripts/populate_database.py
 
 # Run in database mode
-USE_DATABASE=true python app.py
+cd legacy-dashboard
+USE_DATABASE=true python3 app.py
 ```
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for cloud deployment instructions.
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for cloud deployment instructions.
 
 ## Dashboard Pages
 
@@ -180,8 +197,9 @@ Edit `config.py` for:
 
 ## Documentation
 
-- [DEPLOYMENT.md](DEPLOYMENT.md) - Cloud deployment guide
-- [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md) - Detailed project documentation
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) - Cloud deployment guide
+- [docs/PROJECT_SUMMARY.md](docs/PROJECT_SUMMARY.md) - Detailed project documentation
+- [docs/NFL_PLAYER_STATS_README.md](docs/NFL_PLAYER_STATS_README.md) - NFL stats documentation
 - [scrapers/README.md](scrapers/README.md) - Scraper documentation
 
 ## Requirements

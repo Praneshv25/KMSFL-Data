@@ -2,13 +2,17 @@
 Flask Web Dashboard for ESPN Fantasy Data
 View and validate scraped data with historical seasons
 """
+import sys
+import os
+# Add parent directory to path to import shared modules
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from flask import Flask, render_template, jsonify, request, send_from_directory
 import json
-import os
 import glob
 from datetime import datetime
 import config
-from data_manager import DataManager
+from scripts.data_manager import DataManager
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'espn-fantasy-scraper-secret-key'

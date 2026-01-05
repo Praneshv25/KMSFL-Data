@@ -17,8 +17,8 @@ LEAGUE_ID = int(os.getenv("LEAGUE_ID", "123456"))  # Replace with your league ID
 SEASON_YEAR = int(os.getenv("SEASON_YEAR", "2024"))  # Current season
 
 # File paths
-COOKIES_FILE = "espn_cookies.json"
-DATA_DIR = "data"
+COOKIES_FILE = "../espn_cookies.json"
+DATA_DIR = "../data"
 DB_FILE = os.path.join(DATA_DIR, "espn_fantasy.db")
 
 # Scraper settings
