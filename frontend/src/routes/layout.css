@@ -1,0 +1,205 @@
+@import 'tailwindcss';
+
+/* ============================================
+   THE ELEMENTAL LEAGUE - DESIGN TOKENS
+   Fire vs Water Visual Language
+   ============================================ */
+
+@theme {
+  /* Fire Palette (Wins, Highs, Energy) */
+  --color-fire-start: #FF5A00;
+  --color-fire-mid: #FF8C00;
+  --color-fire-end: #FFD200;
+  --color-ember: #FF4500;
+
+  /* Water Palette (History, Depth, Calm) - warmer blue-greens */
+  --color-water-start: #5B9AA0;
+  --color-water-mid: #468B8B;
+  --color-water-end: #6FBFC3;
+  --color-deep: #2E6B70;
+
+  /* Cozy Background (Warm, Inviting, Like Firelight) */
+  --color-void: #1a0f0a;
+  --color-void-light: #2d1810;
+  --color-void-lighter: #442618;
+
+  /* Accent Colors */
+  --color-gold: #D4A84B;
+  --color-gold-light: #E8C97B;
+  --color-platinum: #C9B896;
+  --color-mythic: #8B4D39;
+
+  /* Glass Properties */
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-blur: 12px;
+
+  /* Typography */
+  --font-display: 'Luckiest Guy', cursive;
+  --font-body: 'Outfit', sans-serif;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  /* Border Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2rem;
+  --radius-full: 9999px;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    background-color: var(--color-void);
+    color: white;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+  }
+
+  h1 {
+    font-size: 3rem;
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+@layer utilities {
+
+  /* Gradients */
+  .gradient-fire {
+    background: linear-gradient(135deg, var(--color-fire-start), var(--color-fire-end));
+  }
+
+  .gradient-water {
+    background: linear-gradient(135deg, var(--color-water-start), var(--color-water-end));
+  }
+
+  .gradient-void {
+    background: linear-gradient(180deg, var(--color-void), var(--color-void-light));
+  }
+
+  /* Text Gradients */
+  .text-fire {
+    background: linear-gradient(135deg, var(--color-fire-start), var(--color-fire-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-water {
+    background: linear-gradient(135deg, var(--color-water-start), var(--color-water-end));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Glow Effects */
+  .glow-fire {
+    box-shadow: 0 0 20px rgba(255, 90, 0, 0.5),
+      0 0 40px rgba(255, 90, 0, 0.3),
+      0 0 60px rgba(255, 90, 0, 0.1);
+  }
+
+  .glow-water {
+    box-shadow: 0 0 20px rgba(79, 172, 254, 0.5),
+      0 0 40px rgba(79, 172, 254, 0.3),
+      0 0 60px rgba(79, 172, 254, 0.1);
+  }
+
+  .glow-gold {
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5),
+      0 0 40px rgba(255, 215, 0, 0.3);
+  }
+
+  /* Glass Effect */
+  .glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+  }
+
+  /* Animations */
+  @keyframes pulse-fire {
+
+    0%,
+    100% {
+      box-shadow: 0 0 20px rgba(255, 90, 0, 0.5);
+    }
+
+    50% {
+      box-shadow: 0 0 40px rgba(255, 90, 0, 0.8);
+    }
+  }
+
+  @keyframes pulse-water {
+
+    0%,
+    100% {
+      box-shadow: 0 0 20px rgba(79, 172, 254, 0.5);
+    }
+
+    50% {
+      box-shadow: 0 0 30px rgba(79, 172, 254, 0.7);
+    }
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  .animate-pulse-fire {
+    animation: pulse-fire 2s ease-in-out infinite;
+  }
+
+  .animate-pulse-water {
+    animation: pulse-water 3s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+}
