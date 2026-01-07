@@ -147,7 +147,7 @@
                 Win/Loss Heatmap
             </h3>
             <div class="max-h-64 overflow-y-auto space-y-3">
-                {#each seasons.slice(0, 4) as season}
+                {#each seasons as season}
                     <div>
                         <div class="text-xs text-white/50 mb-1">{season}</div>
                         <div class="flex flex-wrap gap-1">

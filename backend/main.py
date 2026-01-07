@@ -301,13 +301,26 @@ def get_records():
         """)
         rows = cursor.fetchall()
         if rows:
-            holders = list(set(row["owner"] for row in rows if row["owner"]))
-            years = list(set(str(row["season_year"]) for row in rows))
+            owner_years = {}
+            for row in rows:
+                if not row['owner']: continue
+                owner = row["owner"]
+                year = str(row["season_year"])
+                if owner not in owner_years:
+                    owner_years[owner] = []
+                owner_years[owner].append(year)
+
+            holder_year_list = []
+            for owner, years in sorted(owner_years.items()):
+                years_str = ", ".join(sorted(years, reverse=True))
+                holder_year_list.append(f"{owner} ({years_str})")
+            
+            holder_str = ", ".join(holder_year_list)
             records.append({
                 "category": "Highest Single Game Score",
                 "value": str(rows[0]["score"]),
-                "holder": ", ".join(holders),
-                "year": ", ".join(years) if len(years) > 1 else years[0]
+                "holder": holder_str,
+                "year": ""
             })
         
         # Lowest single game score - get all tied holders
@@ -331,13 +344,26 @@ def get_records():
         """)
         rows = cursor.fetchall()
         if rows:
-            holders = list(set(row["owner"] for row in rows if row["owner"]))
-            years = list(set(str(row["season_year"]) for row in rows))
+            owner_years = {}
+            for row in rows:
+                if not row['owner']: continue
+                owner = row["owner"]
+                year = str(row["season_year"])
+                if owner not in owner_years:
+                    owner_years[owner] = []
+                owner_years[owner].append(year)
+
+            holder_year_list = []
+            for owner, years in sorted(owner_years.items()):
+                years_str = ", ".join(sorted(years, reverse=True))
+                holder_year_list.append(f"{owner} ({years_str})")
+            
+            holder_str = ", ".join(holder_year_list)
             records.append({
                 "category": "Lowest Single Game Score",
                 "value": str(rows[0]["score"]),
-                "holder": ", ".join(holders),
-                "year": ", ".join(years) if len(years) > 1 else years[0]
+                "holder": holder_str,
+                "year": ""
             })
         
         # Highest avg points per game in a season - get all tied holders
@@ -355,13 +381,25 @@ def get_records():
         """)
         rows = cursor.fetchall()
         if rows:
-            holders = list(set(row["owner"] for row in rows))
-            years = list(set(str(row["season_year"]) for row in rows))
+            owner_years = {}
+            for row in rows:
+                owner = row["owner"]
+                year = str(row["season_year"])
+                if owner not in owner_years:
+                    owner_years[owner] = []
+                owner_years[owner].append(year)
+
+            holder_year_list = []
+            for owner, years in sorted(owner_years.items()):
+                years_str = ", ".join(sorted(years, reverse=True))
+                holder_year_list.append(f"{owner} ({years_str})")
+            
+            holder_str = ", ".join(holder_year_list)
             records.append({
                 "category": "Highest Avg PPG (Season)",
                 "value": f"{rows[0]['avg_ppg']:.2f}",
-                "holder": ", ".join(holders),
-                "year": ", ".join(years) if len(years) > 1 else years[0]
+                "holder": holder_str,
+                "year": ""
             })
         
         # Best regular season record - get all tied holders
@@ -376,13 +414,25 @@ def get_records():
         """)
         rows = cursor.fetchall()
         if rows:
-            holders = list(set(row["owner"] for row in rows))
-            years = list(set(str(row["season_year"]) for row in rows))
+            owner_years = {}
+            for row in rows:
+                owner = row["owner"]
+                year = str(row["season_year"])
+                if owner not in owner_years:
+                    owner_years[owner] = []
+                owner_years[owner].append(year)
+
+            holder_year_list = []
+            for owner, years in sorted(owner_years.items()):
+                years_str = ", ".join(sorted(years, reverse=True))
+                holder_year_list.append(f"{owner} ({years_str})")
+
+            holder_str = ", ".join(holder_year_list)
             records.append({
                 "category": "Best Regular Season Record",
                 "value": f"{rows[0]['wins']}-{rows[0]['losses']}",
-                "holder": ", ".join(holders),
-                "year": ", ".join(years) if len(years) > 1 else years[0]
+                "holder": holder_str,
+                "year": ""
             })
         
         # Most championships - get ALL tied owners
@@ -401,7 +451,7 @@ def get_records():
         """)
         rows = cursor.fetchall()
         if rows:
-            holders = [row["owner"] for row in rows]
+            holders = sorted([row["owner"] for row in rows])
             records.append({
                 "category": "Most Championships",
                 "value": str(rows[0]["titles"]),
@@ -429,10 +479,171 @@ def get_records():
         """)
         rows = cursor.fetchall()
         if rows:
-            holders = [row["owner"] for row in rows]
+            holders = sorted([row["owner"] for row in rows])
             records.append({
                 "category": "Most Playoff Appearances",
                 "value": str(rows[0]["appearances"]),
+                "holder": ", ".join(holders),
+                "year": "All-Time"
+            })
+
+        # Longest winning streak - handles ties
+        cursor = conn.execute("""
+            WITH winning_streaks AS (
+                WITH season_games AS (
+                    SELECT season_year, week, home_team AS team, home_score AS score, away_score AS opponent_score FROM matchups
+                    UNION ALL
+                    SELECT season_year, week, away_team AS team, away_score AS score, home_score AS opponent_score FROM matchups
+                ),
+                game_outcomes AS (
+                    SELECT season_year, week, team, CASE WHEN score > opponent_score THEN 'W' WHEN score < opponent_score THEN 'L' ELSE 'T' END AS outcome FROM season_games
+                ),
+                streak_groups AS (
+                    SELECT *, CASE WHEN outcome != LAG(outcome, 1, 'S') OVER (PARTITION BY season_year, team ORDER BY week) THEN 1 ELSE 0 END AS new_streak FROM game_outcomes
+                ),
+                streak_ids AS (
+                    SELECT *, SUM(new_streak) OVER (PARTITION BY season_year, team ORDER BY week) AS streak_id FROM streak_groups
+                )
+                SELECT
+                    t.owner,
+                    s.season_year,
+                    COUNT(*) AS streak_length
+                FROM streak_ids s
+                JOIN teams t ON s.team = t.team_name AND s.season_year = t.season_year
+                WHERE s.outcome = 'W'
+                GROUP BY t.owner, s.season_year, s.streak_id
+            )
+            SELECT owner, season_year, streak_length
+            FROM winning_streaks
+            WHERE streak_length = (SELECT MAX(streak_length) FROM winning_streaks)
+        """)
+        rows = cursor.fetchall()
+        if rows:
+            owner_years = {}
+            for row in rows:
+                owner = row["owner"]
+                year = str(row["season_year"])
+                if owner not in owner_years:
+                    owner_years[owner] = []
+                owner_years[owner].append(year)
+
+            holder_year_list = []
+            for owner, years in sorted(owner_years.items()):
+                years_str = ", ".join(sorted(years, reverse=True))
+                holder_year_list.append(f"{owner} ({years_str})")
+            
+            holder_str = ", ".join(holder_year_list)
+            records.append({
+                "category": "Longest Winning Streak",
+                "value": f"{rows[0]['streak_length']} games",
+                "holder": holder_str,
+                "year": ""
+            })
+
+        # Longest losing streak - handles ties
+        cursor = conn.execute("""
+            WITH losing_streaks AS (
+                WITH season_games AS (
+                    SELECT season_year, week, home_team AS team, home_score AS score, away_score AS opponent_score FROM matchups
+                    UNION ALL
+                    SELECT season_year, week, away_team AS team, away_score AS score, home_score AS opponent_score FROM matchups
+                ),
+                game_outcomes AS (
+                    SELECT season_year, week, team, CASE WHEN score > opponent_score THEN 'W' WHEN score < opponent_score THEN 'L' ELSE 'T' END AS outcome FROM season_games
+                ),
+                streak_groups AS (
+                    SELECT *, CASE WHEN outcome != LAG(outcome, 1, 'S') OVER (PARTITION BY season_year, team ORDER BY week) THEN 1 ELSE 0 END AS new_streak FROM game_outcomes
+                ),
+                streak_ids AS (
+                    SELECT *, SUM(new_streak) OVER (PARTITION BY season_year, team ORDER BY week) AS streak_id FROM streak_groups
+                )
+                SELECT
+                    t.owner,
+                    s.season_year,
+                    COUNT(*) AS streak_length
+                FROM streak_ids s
+                JOIN teams t ON s.team = t.team_name AND s.season_year = t.season_year
+                WHERE s.outcome = 'L'
+                GROUP BY t.owner, s.season_year, s.streak_id
+            )
+            SELECT owner, season_year, streak_length
+            FROM losing_streaks
+            WHERE streak_length = (SELECT MAX(streak_length) FROM losing_streaks)
+        """)
+        rows = cursor.fetchall()
+        if rows:
+            owner_years = {}
+            for row in rows:
+                owner = row["owner"]
+                year = str(row["season_year"])
+                if owner not in owner_years:
+                    owner_years[owner] = []
+                owner_years[owner].append(year)
+
+            holder_year_list = []
+            for owner, years in sorted(owner_years.items()):
+                years_str = ", ".join(sorted(years, reverse=True))
+                holder_year_list.append(f"{owner} ({years_str})")
+            
+            holder_str = ", ".join(holder_year_list)
+            records.append({
+                "category": "Longest Losing Streak",
+                "value": f"{rows[0]['streak_length']} games",
+                "holder": holder_str,
+                "year": ""
+            })
+
+        # Most consecutive playoff berths
+        cursor = conn.execute("""
+            WITH playoff_appearances AS (
+                SELECT
+                    season_year,
+                    owner,
+                    CASE
+                        WHEN (season_year = 2019 AND rank <= 4) OR (season_year > 2019 AND rank <= 6) THEN 1
+                        ELSE 0
+                    END AS made_playoffs
+                FROM teams
+                ORDER BY owner, season_year
+            ),
+            streak_groups AS (
+                SELECT
+                    owner,
+                    season_year,
+                    made_playoffs,
+                    CASE
+                        WHEN made_playoffs != LAG(made_playoffs, 1, -1) OVER (PARTITION BY owner ORDER BY season_year) THEN 1
+                        ELSE 0
+                    END AS new_streak
+                FROM playoff_appearances
+            ),
+            streak_ids AS (
+                SELECT
+                    owner,
+                    season_year,
+                    made_playoffs,
+                    SUM(new_streak) OVER (PARTITION BY owner ORDER BY season_year) AS streak_id
+                FROM streak_groups
+            ),
+            berth_streaks AS (
+                SELECT
+                    owner,
+                    streak_id,
+                    COUNT(*) AS streak_length
+                FROM streak_ids
+                WHERE made_playoffs = 1
+                GROUP BY owner, streak_id
+            )
+            SELECT owner, streak_length
+            FROM berth_streaks
+            WHERE streak_length = (SELECT MAX(streak_length) FROM berth_streaks)
+        """)
+        rows = cursor.fetchall()
+        if rows:
+            holders = sorted(list(set(row["owner"] for row in rows)))
+            records.append({
+                "category": "Most Consecutive Playoff Berths",
+                "value": f"{rows[0]['streak_length']} seasons",
                 "holder": ", ".join(holders),
                 "year": "All-Time"
             })

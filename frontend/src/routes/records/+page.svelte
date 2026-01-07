@@ -9,14 +9,7 @@
     // Records from API
     const allTimeRecords = data.records || [];
 
-    // Active streaks (would need separate API endpoint)
-    const activeStreaks = [
-        { team: "Dynasty Destroyers", streak: "W5", type: "win" },
-        { team: "Gridiron Giants", streak: "W3", type: "win" },
-        { team: "Fumble Factory", streak: "L4", type: "loss" },
-    ];
-
-    type SortKey = "category" | "holder" | "year";
+    type SortKey = "category" | "holder";
     let sortKey = $state<SortKey>("category");
     let sortAsc = $state(true);
 
@@ -53,39 +46,6 @@
             <span class="text-fire">Record Book</span>
         </h1>
     </header>
-
-    <!-- Active Streaks -->
-    <section class="mb-10">
-        <h2
-            class="text-2xl mb-4 text-center"
-            style="font-family: 'Luckiest Guy', cursive;"
-        >
-            🔥 Active Streaks
-        </h2>
-        <div class="flex flex-wrap justify-center gap-4">
-            {#each activeStreaks as streak}
-                <div
-                    class="flex items-center gap-3 px-5 py-3 rounded-full
-            {streak.type === 'win'
-                        ? 'bg-orange-500/20 border border-orange-500/40'
-                        : 'bg-blue-500/20 border border-blue-500/40'}"
-                    use:ignite
-                >
-                    <span class="text-lg"
-                        >{streak.type === "win" ? "🔥" : "💧"}</span
-                    >
-                    <span class="font-medium text-white">{streak.team}</span>
-                    <span
-                        class="font-mono font-bold {streak.type === 'win'
-                            ? 'text-orange-400'
-                            : 'text-blue-400'}"
-                    >
-                        {streak.streak}
-                    </span>
-                </div>
-            {/each}
-        </div>
-    </section>
 
     <!-- Records Table -->
     <GlassCard variant="fire">
@@ -126,19 +86,6 @@
                                     : ""}
                             </button>
                         </th>
-                        <th class="text-center py-4 px-4">
-                            <button
-                                onclick={() => sortBy("year")}
-                                use:ripple
-                                class="hover:text-white"
-                            >
-                                Year {sortKey === "year"
-                                    ? sortAsc
-                                        ? "↑"
-                                        : "↓"
-                                    : ""}
-                            </button>
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -158,9 +105,6 @@
                             </td>
                             <td class="py-4 px-4 text-white/80"
                                 >{record.holder}</td
-                            >
-                            <td class="py-4 px-4 text-center text-white/60"
-                                >{record.year}</td
                             >
                         </tr>
                     {/each}
