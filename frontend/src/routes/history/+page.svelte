@@ -73,20 +73,13 @@
         }
     }
 
-    // Watch for year changes
+    // Watch for data-fetching changes
     $effect(() => {
-        fetchStandings(selectedYear);
-    });
-
-    // Watch for tab/year/week changes
-    $effect(() => {
-        if (activeTab === "matchups") {
+        if (activeTab === "standings") {
+            fetchStandings(selectedYear);
+        } else if (activeTab === "matchups") {
             fetchMatchups(selectedYear, selectedWeek);
-        }
-    });
-
-    $effect(() => {
-        if (activeTab === "draft") {
+        } else if (activeTab === "draft") {
             fetchDraft(selectedYear);
         }
     });
@@ -420,7 +413,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {#each sortedStandings as team (team.rank)}
+                            {#each sortedStandings as team (team.team_name)}
                                 <tr
                                     animate:flip={{ duration: 300 }}
                                     class="border-b border-white/5 hover:bg-white/5 transition-colors"

@@ -1,6 +1,6 @@
 <script lang="ts">
     import GlassCard from "$lib/components/GlassCard.svelte";
-    import { ignite, ripple } from "$lib/actions";
+    import { ripple } from "$lib/actions";
     import { flip } from "svelte/animate";
 
     // Get data from load function
