@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-    <title>The Elemental League | Fantasy Football History</title>
+    <title>The KMSFL Almanac</title>
 </svelte:head>
 
 <div class="container mx-auto px-6 pt-6">
@@ -15,8 +15,8 @@
             style="font-family: 'Luckiest Guy', cursive;"
             use:float={{ duration: 4000, amplitude: 8 }}
         >
-            <span class="text-fire">The Elemental</span>
-            <span class="text-water"> League</span>
+            <span class="text-fire">The KMSFL</span>
+            <span class="text-water"> ALMANAC</span>
         </h1>
     </header>
 
@@ -35,7 +35,7 @@
 
         <GlassCard variant="water">
             <div class="text-center">
-                <div class="text-4xl font-bold text-water mb-2">10</div>
+                <div class="text-4xl font-bold text-water mb-2">13</div>
                 <div class="text-white/60 text-sm uppercase tracking-wider">
                     Managers
                 </div>

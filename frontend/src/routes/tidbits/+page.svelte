@@ -1,44 +1,15 @@
 <script lang="ts">
     import GlassCard from "$lib/components/GlassCard.svelte";
 
-    // Mock tidbits/insights data
-    const tidbits = [
-        {
-            title: "Most Points in Week 1 History",
-            value: "198.5",
-            context: "Dynasty Destroyers (2023)",
-            type: "fire",
-        },
-        {
-            title: "Biggest Upset Ever",
-            value: "45.3 pt margin",
-            context: "Fumble Factory beat Gridiron Giants",
-            type: "water",
-        },
-        {
-            title: "Most Consistent Scorer",
-            value: "±8.2 pts",
-            context: "Touchdown Titans (2022)",
-            type: "neutral",
-        },
-        {
-            title: "Playoff Choker Award",
-            value: "0-4 in playoffs",
-            context: "Hail Mary Heroes",
-            type: "water",
-        },
-    ];
+    // Get data from load function
+    let { data } = $props();
 
-    const chartData = [
-        { year: 2019, avgPoints: 125 },
-        { year: 2020, avgPoints: 132 },
-        { year: 2021, avgPoints: 138 },
-        { year: 2022, avgPoints: 145 },
-        { year: 2023, avgPoints: 148 },
-        { year: 2024, avgPoints: 152 },
-    ];
+    // Luck rankings from API
+    const luckRankings = data.luck || [];
 
-    const maxPoints = Math.max(...chartData.map((d) => d.avgPoints));
+    // Get luckiest and unluckiest
+    const luckiest = luckRankings.slice(0, 3);
+    const unluckiest = luckRankings.slice(-3).reverse();
 </script>
 
 <svelte:head>
@@ -56,86 +27,145 @@
         </h1>
     </header>
 
-    <!-- Tidbits Grid -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-        {#each tidbits as tidbit}
-            <GlassCard variant={tidbit.type as "fire" | "water" | "neutral"}>
-                <div class="flex items-start gap-4">
-                    <div class="text-4xl">
-                        {#if tidbit.type === "fire"}🔥
-                        {:else if tidbit.type === "water"}💧
-                        {:else}✨
-                        {/if}
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-bold text-white mb-2">
-                            {tidbit.title}
-                        </h3>
-                        <div class="text-3xl font-bold text-gradient mb-2">
-                            {tidbit.value}
+    <!-- Luck Rankings Section -->
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+        <!-- Luckiest -->
+        <GlassCard variant="fire">
+            <h2
+                class="text-2xl mb-6 text-center"
+                style="font-family: 'Luckiest Guy', cursive;"
+            >
+                🍀 Luckiest Managers
+            </h2>
+            <div class="space-y-4">
+                {#each luckiest as manager, i}
+                    <div
+                        class="flex items-center gap-4 p-3 bg-white/5 rounded-lg"
+                    >
+                        <div class="text-2xl font-bold text-yellow-400">
+                            {#if i === 0}🥇
+                            {:else if i === 1}🥈
+                            {:else}🥉
+                            {/if}
                         </div>
-                        <p class="text-white/50 text-sm">{tidbit.context}</p>
+                        <div class="flex-1">
+                            <div class="font-medium text-white">
+                                {manager.owner}
+                            </div>
+                            <div class="text-xs text-white/50">
+                                {manager.actual_wins} wins (expected: {manager.expected_wins})
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div
+                                class="font-mono text-lg font-bold text-green-400"
+                            >
+                                +{manager.luck}
+                            </div>
+                            <div class="text-xs text-white/50">luck</div>
+                        </div>
                     </div>
-                </div>
-            </GlassCard>
-        {/each}
+                {/each}
+            </div>
+        </GlassCard>
+
+        <!-- Unluckiest -->
+        <GlassCard variant="water">
+            <h2
+                class="text-2xl mb-6 text-center"
+                style="font-family: 'Luckiest Guy', cursive;"
+            >
+                😢 Unluckiest Managers
+            </h2>
+            <div class="space-y-4">
+                {#each unluckiest as manager, i}
+                    <div
+                        class="flex items-center gap-4 p-3 bg-white/5 rounded-lg"
+                    >
+                        <div class="text-2xl">
+                            {#if i === 0}💀
+                            {:else if i === 1}😭
+                            {:else}😔
+                            {/if}
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium text-white">
+                                {manager.owner}
+                            </div>
+                            <div class="text-xs text-white/50">
+                                {manager.actual_wins} wins (expected: {manager.expected_wins})
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div
+                                class="font-mono text-lg font-bold text-red-400"
+                            >
+                                {manager.luck}
+                            </div>
+                            <div class="text-xs text-white/50">luck</div>
+                        </div>
+                    </div>
+                {/each}
+            </div>
+        </GlassCard>
     </section>
 
-    <!-- Chart Section -->
+    <!-- Full Luck Rankings -->
     <section class="mb-12">
         <GlassCard variant="neutral">
             <h2
                 class="text-2xl mb-6 text-center"
                 style="font-family: 'Luckiest Guy', cursive;"
             >
-                📈 League Scoring Trend
+                📊 Full Luck Rankings
             </h2>
-
-            <div class="h-64 flex items-end justify-around gap-4 px-4">
-                {#each chartData as point}
-                    <div class="flex-1 flex flex-col items-center gap-2">
-                        <div
-                            class="w-full rounded-t-lg bg-gradient-to-t from-orange-500 to-amber-400 transition-all duration-500 hover:opacity-80"
-                            style="height: {(point.avgPoints / maxPoints) *
-                                100}%;"
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr
+                            class="text-white/60 text-sm border-b border-white/10"
                         >
-                            <div
-                                class="text-center -mt-8 text-white font-bold text-sm"
+                            <th class="text-left py-3 px-4">#</th>
+                            <th class="text-left py-3 px-4">Manager</th>
+                            <th class="text-center py-3 px-4">Actual Wins</th>
+                            <th class="text-center py-3 px-4">Expected Wins</th>
+                            <th class="text-right py-3 px-4">Luck Factor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {#each luckRankings as manager, i}
+                            <tr
+                                class="border-b border-white/5 hover:bg-white/5 transition-colors"
                             >
-                                {point.avgPoints}
-                            </div>
-                        </div>
-                        <div class="text-white/60 text-sm">{point.year}</div>
-                    </div>
-                {/each}
+                                <td class="py-3 px-4 font-medium text-white/60"
+                                    >{i + 1}</td
+                                >
+                                <td class="py-3 px-4 font-medium"
+                                    >{manager.owner}</td
+                                >
+                                <td class="py-3 px-4 text-center"
+                                    >{manager.actual_wins}</td
+                                >
+                                <td class="py-3 px-4 text-center"
+                                    >{manager.expected_wins}</td
+                                >
+                                <td
+                                    class="py-3 px-4 text-right font-mono font-bold {manager.luck >=
+                                    0
+                                        ? 'text-green-400'
+                                        : 'text-red-400'}"
+                                >
+                                    {manager.luck >= 0 ? "+" : ""}{manager.luck}
+                                </td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
             </div>
-
             <p class="text-center text-white/40 text-sm mt-4">
-                Average points per game by season
+                Luck = Actual Wins - Expected Wins (based on weekly score
+                rankings)
             </p>
-        </GlassCard>
-    </section>
-
-    <!-- Shareable Card Preview -->
-    <section>
-        <GlassCard variant="mythic">
-            <div class="text-center">
-                <h3
-                    class="text-xl font-bold mb-4"
-                    style="font-family: 'Luckiest Guy', cursive;"
-                >
-                    📸 Shareable Stat Cards
-                </h3>
-                <p class="text-white/60 mb-4">
-                    Coming soon: Generate beautiful stat cards to share on
-                    social media
-                </p>
-                <button
-                    class="px-6 py-3 bg-orange-600/30 hover:bg-orange-600/50 rounded-full transition-colors text-white font-medium"
-                >
-                    Create Shareable Card →
-                </button>
-            </div>
         </GlassCard>
     </section>
 </div>

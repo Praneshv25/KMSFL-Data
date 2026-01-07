@@ -18,20 +18,34 @@
         season_history: [],
     };
 
+    // Rivalries from API
+    const rivalries = data.rivalries || [];
+
+    // Weekly results from API
+    const weeklyResults = data.weeklyResults || [];
+
     // Calculate win percentage
     const totalGames = manager.total_wins + manager.total_losses;
     const winPct = totalGames > 0 ? manager.total_wins / totalGames : 0;
 
-    // Generate mock heatmap data (would need separate API endpoint for real data)
-    const months = ["Sep", "Oct", "Nov", "Dec"];
-    const weeks = [1, 2, 3, 4];
-    const heatmapData = months.flatMap((month) =>
-        weeks.map((week) => ({
-            month,
-            week,
-            result: Math.random() > 0.4 ? "W" : "L",
-        })),
-    );
+    // Group weekly results by season for heatmap display
+    interface WeekResult {
+        week: number;
+        result: string;
+        score: number;
+        opponent_score: number;
+    }
+    const seasonGroups: Record<number, WeekResult[]> = {};
+    for (const r of weeklyResults) {
+        if (!seasonGroups[r.season_year]) {
+            seasonGroups[r.season_year] = [];
+        }
+        seasonGroups[r.season_year].push(r);
+    }
+    // Get sorted seasons (most recent first)
+    const seasons = Object.keys(seasonGroups)
+        .map(Number)
+        .sort((a, b) => b - a);
 </script>
 
 <svelte:head>
@@ -132,20 +146,23 @@
             >
                 Win/Loss Heatmap
             </h3>
-            <div class="grid grid-cols-4 gap-2">
-                {#each months as month}
-                    <div class="text-center text-xs text-white/40 mb-1">
-                        {month}
-                    </div>
-                {/each}
-                {#each heatmapData as cell}
-                    <div
-                        class="aspect-square rounded-md flex items-center justify-center text-xs font-bold
-              {cell.result === 'W'
-                            ? 'bg-green-500/40 text-green-300'
-                            : 'bg-red-500/40 text-red-300'}"
-                    >
-                        {cell.result}
+            <div class="max-h-64 overflow-y-auto space-y-3">
+                {#each seasons.slice(0, 4) as season}
+                    <div>
+                        <div class="text-xs text-white/50 mb-1">{season}</div>
+                        <div class="flex flex-wrap gap-1">
+                            {#each seasonGroups[season] as week}
+                                <div
+                                    class="w-6 h-6 rounded flex items-center justify-center text-xs font-bold cursor-default
+                                    {week.result === 'W'
+                                        ? 'bg-green-500/40 text-green-300'
+                                        : 'bg-red-500/40 text-red-300'}"
+                                    title="Week {week.week}: {week.score} - {week.opponent_score}"
+                                >
+                                    {week.week}
+                                </div>
+                            {/each}
+                        </div>
                     </div>
                 {/each}
             </div>
@@ -159,9 +176,46 @@
             >
                 Rivalries
             </h3>
-            <div class="text-center py-8 text-white/40">
-                <p>Rivalry data coming soon...</p>
-            </div>
+            {#if rivalries.length > 0}
+                <div class="space-y-3 max-h-64 overflow-y-auto">
+                    {#each rivalries as rival}
+                        <div
+                            class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
+                        >
+                            <span class="text-2xl"
+                                >{rival.win_pct >= 50 ? "🔥" : "⚔️"}</span
+                            >
+                            <div class="flex-1">
+                                <div class="font-medium text-white">
+                                    {rival.opponent}
+                                </div>
+                                <div class="text-xs text-white/50">
+                                    {rival.total_games} games played
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div
+                                    class="font-mono text-sm {rival.wins >
+                                    rival.losses
+                                        ? 'text-green-400'
+                                        : rival.wins < rival.losses
+                                          ? 'text-red-400'
+                                          : 'text-white/60'}"
+                                >
+                                    {rival.wins}-{rival.losses}
+                                </div>
+                                <div class="text-xs text-white/50">
+                                    {rival.win_pct}%
+                                </div>
+                            </div>
+                        </div>
+                    {/each}
+                </div>
+            {:else}
+                <div class="text-center py-8 text-white/40">
+                    <p>No rivalry data available</p>
+                </div>
+            {/if}
         </GlassCard>
     </div>
 
